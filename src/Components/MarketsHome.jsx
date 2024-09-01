@@ -38,7 +38,7 @@ const MarketsHome = () => {
     <div>
       <div className="mt-5">
         <div className="flex items-center justify-between py-4">
-        <h3 className="text-3xl font-bold text-primary py-5">Trading History</h3>
+        <h3 className="text-3xl font-bold text-primary py-5">Hot Markets</h3>
           <div className="border-2 border-gray-300 w-max flex items-center gap-2 pr-4 rounded">
             <input
               type="text"
