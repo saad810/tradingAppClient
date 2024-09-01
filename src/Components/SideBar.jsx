@@ -36,14 +36,14 @@ const SideBar = () => {
             </div>
 
             <ul className="space-y-4">
-              <li className="flex items-center space-x-2">
+              <Link to="/profile" className="flex items-center space-x-2">
                 <span className="text-2xl">
                   <FaUser />
                 </span>
-                <a href="#" className="text-lg font-medium">
+                <span className="text-lg font-medium">
                   My profile
-                </a>
-              </li>
+                </span>
+              </Link>
               <hr className="border-gray-400" />
 
               {/* Conditionally render Trade History if realTradeAllowed is true */}

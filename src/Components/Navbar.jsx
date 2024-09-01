@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState } from "react";
 import { RxHamburgerMenu } from "react-icons/rx";
 import SideBar from "./SideBar";
 import { useNavigate } from "react-router-dom";
@@ -8,7 +8,7 @@ import useDemoTrade from "../hooks/useDemoTrade";
 
 const Navbar = () => {
   const navigate = useNavigate();
-  const { auth } = useAuth();
+  const { auth, currentAccount, setCurrentAccount } = useAuth();
   const { demoBalance } = useDemoTrade();
   const [show, setShow] = useState(false);
 
@@ -24,6 +24,18 @@ const Navbar = () => {
 
   const navigateSignup = () => {
     navigate("/auth/signup");
+  };
+
+  const handleSwitchAccount = () => {
+    if (auth && auth.user && auth.user.verified) {
+      if (currentAccount === "demo") {
+        setCurrentAccount("real");
+      } else {
+        setCurrentAccount("demo");
+      }
+    } else {
+      navigate("/verify");
+    }
   };
 
   return (
@@ -49,15 +61,22 @@ const Navbar = () => {
             <div className="relative flex gap-2 items-center">
               {demoAllowed ? (
                 <>
-                  <div className="flex items-center gap-2 mr-3">
-                    <span className="font-medium text-base text-primaryblue-200">
-                      Balance
-                    </span>
-                    <span className="font-semibold text-lg text-primaryblue-200">
-                      {parseFloat(demoBalance.toFixed(2))} USD
-                    </span>
-                  </div>
-                  <button className="bg-white py-1 px-2 text-base text-primary rounded">
+                  {currentAccount === "demo" ? (
+                    <div className="flex items-center gap-2 mr-3">
+                      <span className="font-medium text-base text-primaryblue-200">
+                        Balance
+                      </span>
+                      <span className="font-semibold text-lg text-primaryblue-200">
+                        {parseFloat(demoBalance.toFixed(2))} USD
+                      </span>
+                    </div>
+                  ) : (
+                    <FundsActions />
+                  )}
+                  <button
+                    className="bg-white py-1 px-2 text-base text-primary rounded"
+                    onClick={handleSwitchAccount}
+                  >
                     Switch Account
                   </button>
                 </>
@@ -68,7 +87,7 @@ const Navbar = () => {
           ) : (
             <div className="flex gap-2 items-center">
               <button
-                className="bg-white py-2 px-4 text-base text-primary rounded"
+                className="bg-white py-1 px-4 text-base text-primary rounded"
                 onClick={navigateLogin}
               >
                 Login
@@ -90,10 +109,10 @@ const Navbar = () => {
 
 const FundsActions = () => (
   <div className="flex items-center gap-3">
-    <button className="bg-white py-2 px-4 text-base text-primary rounded">
+    <button className="bg-white py-1 px-3 text-base text-primary rounded">
       Deposit
     </button>
-    <button className="bg-secondary py-2 px-4 text-base text-white rounded">
+    <button className="bg-secondary py-1 px-3 text-base text-white rounded">
       Withdraw
     </button>
   </div>

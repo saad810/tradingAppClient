@@ -36,7 +36,7 @@ const MarketBar = ({ market }) => {
       <td className="py-2">
         {closePrice !== null ? (
           <span
-            className={`"font-bold"${
+            className={`font-bold ${
               currentPriceDirection === "higher"
                 ? "text-lime-600"
                 : "text-red-600"

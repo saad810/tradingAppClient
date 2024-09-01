@@ -11,6 +11,8 @@ import MarketsScreen from "./Screens/MarketsScreen";
 import AdminDashBoard from "./Screens/admin/AdminDashBoard";
 import RequireAuth from "./utils/RequireAuth";
 import TradingHistory from "./Screens/TradingHistory";
+import VerifyOTP from "./Forms/VerifyOTP";
+import ProfileScreen from "./Screens/ProfileScreen";
 // import Chat from "./Components/Chat";
 const App = () => {
   return (
@@ -24,6 +26,8 @@ const App = () => {
       {/* <Route element={<RequireAuth />}> */}
       <Route path="/" element={<GlobalLayout />}>
         <Route path="" element={<UserHome />} />
+        <Route path="profile" element={<ProfileScreen />} />
+        <Route path="verify" element={<VerifyOTP />} />
         <Route path="markets" element={<MarketsScreen />} />
         <Route path="markets/:symbol" element={<TradingChartsScreen />} />
         <Route path="history" element={<TradingHistory />} />

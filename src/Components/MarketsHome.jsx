@@ -6,6 +6,7 @@ import MarketBar from "./MarketBar";
 const MarketsHome = () => {
   const [filteredData, setFilteredData] = useState([]);
   const [searchQuery, setSearchQuery] = useState("");
+
   // Function to shuffle the array
   const shuffleArray = (array) => {
     for (let i = array.length - 1; i > 0; i--) {
@@ -14,6 +15,7 @@ const MarketsHome = () => {
     }
     return array;
   };
+
   useEffect(() => {
     // Shuffle the markets array and get the first 6 items
     const randomMarkets = shuffleArray([...markets]).slice(0, 6);
@@ -29,7 +31,7 @@ const MarketsHome = () => {
       setFilteredData(filtered);
     } else {
       // If search query is empty, reset to the initial random markets
-      const randomMarkets = shuffleArray([...markets]).slice(0, 6);
+      const randomMarkets = shuffleArray([...markets]).slice(0, 3);
       setFilteredData(randomMarkets);
     }
   }, [searchQuery]); // Runs whenever the search query changes
@@ -38,7 +40,7 @@ const MarketsHome = () => {
     <div>
       <div className="mt-5">
         <div className="flex items-center justify-between py-4">
-        <h3 className="text-3xl font-bold text-primary py-5">Hot Markets</h3>
+          <h3 className="text-3xl font-bold text-primary py-5">Hot Markets</h3>
           <div className="border-2 border-gray-300 w-max flex items-center gap-2 pr-4 rounded">
             <input
               type="text"
@@ -70,8 +72,8 @@ const MarketsHome = () => {
               </tr>
             </thead>
             <tbody>
-              {filteredData.map((market, index) => (
-                <MarketBar key={index} market={market} />
+              {filteredData.map((market) => (
+                <MarketBar key={market.symbol} market={market} />
               ))}
             </tbody>
           </table>

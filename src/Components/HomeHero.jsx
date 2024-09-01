@@ -6,7 +6,7 @@ import axios from "../api/axios";
 import { toast } from "react-toastify";
 
 const HomeHero = () => {
-  const { auth } = useAuth();
+  const { auth, currentAccount } = useAuth();
   const userData = auth.user;
   const verified = userData.verified;
   const name = userData.name || "No Username";
@@ -45,11 +45,7 @@ const HomeHero = () => {
           </div>
           <div className="pr-14">
             <div className="text-2xl font-bold text-primary">
-              {userData.demoAllowed ? (
-                "Demo"
-              ) : userData.realTradeAllowed ? (
-                "Trader"
-              ) : null}
+              {currentAccount}
             </div>
           </div>
         </div>
