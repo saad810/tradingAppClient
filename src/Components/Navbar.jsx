@@ -4,12 +4,12 @@ import SideBar from "./SideBar";
 import { useNavigate } from "react-router-dom";
 import { Link } from "react-router-dom";
 import useAuth from "../hooks/useAuth";
-import useTrade from "../hooks/useTrade";
+import useDemoTrade from "../hooks/useDemoTrade";
 
 const Navbar = () => {
   const navigate = useNavigate();
   const { auth } = useAuth();
-  const { demoBalance } = useTrade();
+  const { demoBalance } = useDemoTrade();
   const [show, setShow] = useState(false);
 
   const demoAllowed = auth && auth.user && auth.user.demoAllowed;
@@ -28,7 +28,7 @@ const Navbar = () => {
 
   return (
     <>
-      <nav className="fixed top-0 left-0 right-0 container mx-auto px-10 bg-primary py-3">
+      <nav className="container mx-auto px-10 bg-primary py-3">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-5">
             <button onClick={toggleSidebar}>
@@ -50,11 +50,11 @@ const Navbar = () => {
               {demoAllowed ? (
                 <>
                   <div className="flex items-center gap-2 mr-3">
-                    <span className="font-semibold text-lg text-primaryblue-200">
-                      Demo Balance
+                    <span className="font-medium text-base text-primaryblue-200">
+                      Balance
                     </span>
                     <span className="font-semibold text-lg text-primaryblue-200">
-                      ${demoBalance}
+                      {parseFloat(demoBalance.toFixed(2))} USD
                     </span>
                   </div>
                   <button className="bg-white py-1 px-2 text-base text-primary rounded">

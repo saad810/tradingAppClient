@@ -7,7 +7,6 @@ import AuthLayout from "./Layout/AuthLayout";
 import GlobalLayout from "./Layout/GlobalLayout";
 import UserHome from "./Screens/UserHome";
 import TradingChartsScreen from "./Screens/TradingChartsScreen";
-import TicksComponent from "./Components/TicksComponent";
 import MarketsScreen from "./Screens/MarketsScreen";
 import AdminDashBoard from "./Screens/admin/AdminDashBoard";
 import RequireAuth from "./utils/RequireAuth";
@@ -20,14 +19,13 @@ const App = () => {
         <Route path="" element={<Login />} />
         <Route path="signup" element={<Signup />} />
       </Route>
-      <Route path="/privacy-policy" element={<TicksComponent />} />
-      <Route path="/terms" element={<TicksComponent />} />
+      <Route path="/privacy-policy" element={<h1>Privacy</h1>} />
+      <Route path="/terms" element={<h1>Terms</h1>} />
       {/* <Route element={<RequireAuth />}> */}
       <Route path="/" element={<GlobalLayout />}>
         <Route path="" element={<UserHome />} />
         <Route path="markets" element={<MarketsScreen />} />
         <Route path="markets/:symbol" element={<TradingChartsScreen />} />
-        <Route path="ticks" element={<TicksComponent />} />
         <Route path="history" element={<TradingHistory />} />
       </Route>
       <Route path="admin">

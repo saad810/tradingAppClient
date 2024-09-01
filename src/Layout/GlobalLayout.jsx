@@ -13,7 +13,7 @@ const GlobalLayout = () => {
   return (
     <section>
       <Navbar />
-      <main className="container mt-20 max-w-7xl mx-auto">
+      <main className="container max-w-7xl mx-auto">
         <Outlet />
       </main>
       <button className="fixed right-5 bottom-5" onClick={toggleChat}>
