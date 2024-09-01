@@ -1,30 +1,27 @@
 import { useState, useEffect } from "react";
 const getLocalValue = (key, initialValue) => {
-  // for server side react
-  if (typeof window !== "undefined") {
-    return initialValue;
-  }
+  // Check if the code is running in the browser
+  if (typeof window === "undefined") return initialValue;
 
-  //getting the value
-  const localValue = JSON.parse(localStorage.getItem(key));
-  if (localValue) {
-    return localValue;
-  }
+  // Get the stored value from localStorage
+  const localValue = localStorage.getItem(key);
 
-  // return result of a function
+  // If there's a value, parse it and return
+  if (localValue) return JSON.parse(localValue);
 
-  if (initialValue instanceof Function) {
-    return initialValue();
-  }
+  // If no value exists, return the initial value or the result of a function
+  if (initialValue instanceof Function) return initialValue();
+
+  return initialValue;
 };
+
 const useLocalStorage = (key, initialValue) => {
-  const [value, setValue] = useState(() => {
-    return getLocalValue(key, initialValue);
-  });
+  const [value, setValue] = useState(() => getLocalValue(key, initialValue));
 
   useEffect(() => {
     localStorage.setItem(key, JSON.stringify(value));
-  }, [value, key]);
+  }, [key, value]);
+
   return [value, setValue];
 };
 

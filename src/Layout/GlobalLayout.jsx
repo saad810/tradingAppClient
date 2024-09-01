@@ -3,6 +3,7 @@ import { Outlet } from "react-router-dom";
 import Navbar from "../Components/Navbar";
 import icon from "./icon.png";
 import ChatBox from "../Components/ChatBox";
+import Footer from "../Components/Footer";
 const GlobalLayout = () => {
   const [showChat, setShowChat] = useState(false);
   const toggleChat = () => {
@@ -12,13 +13,14 @@ const GlobalLayout = () => {
   return (
     <section>
       <Navbar />
-      <main className="container mx-auto px-16">
+      <main className="container mt-20 max-w-7xl mx-auto">
         <Outlet />
       </main>
       <button className="fixed right-5 bottom-5" onClick={toggleChat}>
         <img src={icon} alt="chat icon" />
       </button>
       {showChat && <ChatBox />}
+      <Footer />
     </section>
   );
 };

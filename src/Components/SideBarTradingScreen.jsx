@@ -6,7 +6,7 @@ const SideBarTradingScreen =  ({ markets, onSymbolSelect }) => {
     return (
       <div className="mt-20">
         <div>
-          <DropDown title={"Markets"} items={markets} onSymbolSelect={onSymbolSelect} />
+          {/* <DropDown title={"Markets"} items={markets} onSymbolSelect={onSymbolSelect} /> */}
         </div>
         <div className="flex flex-col gap-5 mt-5">
           <button className="border-2 bg-red-500 flex gap-1 flex-col py-3 px-3 rounded-lg">

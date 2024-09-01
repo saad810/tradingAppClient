@@ -9,6 +9,9 @@ import UserHome from "./Screens/UserHome";
 import TradingChartsScreen from "./Screens/TradingChartsScreen";
 import TicksComponent from "./Components/TicksComponent";
 import MarketsScreen from "./Screens/MarketsScreen";
+import AdminDashBoard from "./Screens/admin/AdminDashBoard";
+import RequireAuth from "./utils/RequireAuth";
+import TradingHistory from "./Screens/TradingHistory";
 // import Chat from "./Components/Chat";
 const App = () => {
   return (
@@ -17,12 +20,21 @@ const App = () => {
         <Route path="" element={<Login />} />
         <Route path="signup" element={<Signup />} />
       </Route>
+      <Route path="/privacy-policy" element={<TicksComponent />} />
+      <Route path="/terms" element={<TicksComponent />} />
+      {/* <Route element={<RequireAuth />}> */}
       <Route path="/" element={<GlobalLayout />}>
         <Route path="" element={<UserHome />} />
-        <Route path="trade" element={<MarketsScreen />} />
-        <Route path="trade/:symbol" element={<TradingChartsScreen />} />
-
+        <Route path="markets" element={<MarketsScreen />} />
+        <Route path="markets/:symbol" element={<TradingChartsScreen />} />
+        <Route path="ticks" element={<TicksComponent />} />
+        <Route path="history" element={<TradingHistory />} />
       </Route>
+      <Route path="admin">
+        <Route path="" element={<AdminDashBoard />} />
+      </Route>
+      {/* </Route> */}
+      <Route path="*" element={<div>404</div>} />
     </Routes>
   );
 };

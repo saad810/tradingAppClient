@@ -1,13 +1,46 @@
 import React, { useState } from "react";
 import useInput from "../hooks/useInput";
-import { Link } from "react-router-dom";
-
+import { toast } from "react-toastify";
+import axios from "../api/axios";
+import useAuth from "../hooks/useAuth";
+import { Link, useNavigate, useLocation } from "react-router-dom";
 const Login = () => {
   const [email, emailAtribs, resetEmail] = useInput("");
   const [password, passwordAtribs, resetPassword] = useInput("");
-  const handleSubmit = (e) => {
+  const { setAuth } = useAuth();
+  const location = useLocation();
+  const navigate = useNavigate();
+
+  // const path = location.state?.from?.path || "/";
+  const handleSubmit = async (e) => {
     e.preventDefault();
     console.log(email, password);
+
+    try {
+      const user = {
+        email,
+        password,
+      };
+      const response = await axios.post("/auth", JSON.stringify(user), {
+        headers: {
+          "Content-Type": "application/json",
+        },
+        withCredentials: true, // This should be part of the same configuration object
+      });
+
+      console.log(response.data);
+      setAuth(response.data);
+      toast.success("Login Successful", {
+        autoClose: 2000,
+      });
+
+      navigate("/");
+    } catch (error) {
+      console.log(error);
+      toast.error("Login Failed", {
+        autoClose: 2000,
+      });
+    }
     resetEmail();
     resetPassword();
   };
@@ -15,7 +48,7 @@ const Login = () => {
     <div className="">
       <h3 className="font-bold text-3xl py-1">Welcome</h3>
       <span className="font-medium text-base">Create Account to Continue</span>
-      <form action="" onClick={handleSubmit}>
+      <form action="" onSubmit={handleSubmit}>
         <div>
           <div className="mt-4">
             <label htmlFor="email" className="font-semibold text-base">
@@ -44,7 +77,9 @@ const Login = () => {
           <div className="mt-2">
             <span className="text-sm ">
               Dont have an account{" "}
-              <Link to="signup" className="text-primary font-semibold">Register</Link>
+              <Link to="signup" className="text-primary font-semibold">
+                Register
+              </Link>
             </span>
           </div>
           <div className="mt-8">

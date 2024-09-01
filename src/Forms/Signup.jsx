@@ -1,25 +1,55 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import useInput from "../hooks/useInput";
 import useInputLocalStorage from "../hooks/useInputLocalStorage";
 import { Link } from "react-router-dom";
+import axios from "../api/axios";
+import { useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
 
 const Signup = () => {
   const [email, emailAtribs, resetEmail] = useInputLocalStorage("email", "");
   const [password, passwordAtribs, resetPassword] = useInput("");
   const [match, matchAtribs, resetmatch] = useInput("");
-  const handleSubmit = (e) => {
+  const [loading, setLoading] = useState(false);
+  const navigate = useNavigate();
+  const handleSubmit = async (e) => {
     e.preventDefault();
+    setLoading(true);
     console.log(email, password, match);
-    resetEmail();
-    resetPassword();
-    resetmatch();
+    try {
+      const userTimeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+      const user = {
+        email,
+        password,
+        timeZone: userTimeZone,
+      };
+      const response = await axios.post("/users", JSON.stringify(user), {
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+      toast.success(response.data.message, {
+        autoClose: 1000,
+      });
+      // console.log(response);
+
+      resetEmail();
+      resetPassword();
+      resetmatch();
+      navigate("/auth");
+    } catch (error) {
+      console.log(error);
+      toast.error(error.response.data.message);
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
     <div className="">
       <h3 className="font-bold text-3xl py-1">Welcome Back</h3>
       <span className="font-medium text-base">Login Back to Continue</span>
-      <form action="" onClick={handleSubmit}>
+      <form action="" onSubmit={handleSubmit}>
         <div>
           <div className="mt-4">
             <label htmlFor="email" className="font-semibold text-base">
@@ -51,7 +81,7 @@ const Signup = () => {
             </label>
             <input
               type="password"
-              id="password"
+              id="match"
               {...matchAtribs}
               className="w-full mt-1  p-2 rounded bg-bgOne"
               placeholder="Re-Enter Password"

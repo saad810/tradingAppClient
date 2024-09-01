@@ -1,28 +1,35 @@
 import React, { useState } from "react";
 import { FaUser, FaSearch, FaSignOutAlt } from "react-icons/fa";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import useLogout from "../hooks/useLogout";
+import useAuth from "../hooks/useAuth";
 const SideBar = () => {
-  const [auth, setAuth] = useState({ accessToken: "null" });
+  const { auth } = useAuth();
   const navigate = useNavigate();
+  const logout = useLogout();
 
   const navigateLogin = () => {
     navigate("/auth");
   };
+  const handleLogout = () => {
+    logout();
+    navigate("/auth");
+  };
   return (
-    <div class="w-72 bg-bgOne p-6 z-10 fixed left-0 top-15 h-screen">
-      <h2 class="text-xl font-semibold mb-6">SYNTHONEXT</h2>
-
+    <div class="w-72 bg-bgOne p-6 z-10 fixed left-0 top-14 h-screen">
       <>
-        {auth.accessToken ? (
+        {auth && auth.user.id ? (
           <>
             <div class="flex flex-col items-start mb-6">
               <img
                 src="https://via.placeholder.com/100"
                 alt="User Avatar"
-                class="rounded-full w-24 h-24 mb-4"
+                class="w-24 h-24 mb-4"
               />
-              <h3 class="text-xl font-semibold text-teal-900">Jacob Jones</h3>
-              <p class="text-gray-600">Dispute center</p>
+              <h3 class="text-xl font-semibold text-teal-900">
+                {auth.user.name || "No Username"}
+              </h3>
+              <p class="text-gray-600">{auth.user.email}</p>
             </div>
 
             <ul class="space-y-4">
@@ -40,13 +47,16 @@ const SideBar = () => {
                 <span class="text-2xl">
                   <FaSearch />
                 </span>
-                <a href="#" class="text-lg font-medium">
+                <Link to="/history" class="text-lg font-medium">
                   Trade History
-                </a>
+                </Link>
               </li>
               <hr class="border-gray-400" />
 
-              <li class="flex items-center space-x-2">
+              <li
+                class="flex items-center space-x-2 cursor-pointer"
+                onClick={handleLogout}
+              >
                 <span class="text-2xl">
                   <FaSignOutAlt />
                 </span>
