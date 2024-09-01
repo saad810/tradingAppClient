@@ -50,6 +50,9 @@ const Navbar = () => {
               <li className="text-white text-base">
                 <Link to="/">Home</Link>
               </li>
+              <li className="text-primaryblue-200 text-base">
+                <Link to="/chat">Chat with AI</Link>
+              </li>
               {auth && auth.user ? (
                 <li className="text-white text-base">
                   <Link to="markets">Markets</Link>

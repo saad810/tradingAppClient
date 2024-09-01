@@ -13,6 +13,7 @@ import RequireAuth from "./utils/RequireAuth";
 import TradingHistory from "./Screens/TradingHistory";
 import VerifyOTP from "./Forms/VerifyOTP";
 import ProfileScreen from "./Screens/ProfileScreen";
+import ChatBot from "./Screens/ChatBot";
 // import Chat from "./Components/Chat";
 const App = () => {
   return (
@@ -31,6 +32,7 @@ const App = () => {
         <Route path="markets" element={<MarketsScreen />} />
         <Route path="markets/:symbol" element={<TradingChartsScreen />} />
         <Route path="history" element={<TradingHistory />} />
+        <Route path="chat" element={<ChatBot />} />
       </Route>
       <Route path="admin">
         <Route path="" element={<AdminDashBoard />} />
