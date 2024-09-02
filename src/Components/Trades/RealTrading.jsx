@@ -5,6 +5,7 @@ import { createChart } from "lightweight-charts";
 import useCandlestickData from "../../hooks/useCandlestickData";
 import useTrade from "../../hooks/useTrade";
 import RealTradeSideBar from "../TradingSideBar/RealTradeSideBar";
+import { toast } from "react-toastify";
 
 const RealTrading = () => {
   const { symbol } = useParams();
@@ -20,6 +21,9 @@ const RealTrading = () => {
   } = useTrade(symbol, candlestickData);
 
   const chartRef = useRef(null);
+  useEffect(() => {
+    toast.info("Real trading YAY");
+  }, []);
 
   useEffect(() => {
     const chart = createChart(chartRef.current, {
@@ -46,7 +50,7 @@ const RealTrading = () => {
 
   return (
     <div className="flex">
-      <h1>real</h1>
+      {/* <h1>real</h1> */}
       <div style={{ width: "1180px", height: "500px" }} className="mt-3">
         <div ref={chartRef} style={{ width: "100%", height: "100%" }}></div>
       </div>

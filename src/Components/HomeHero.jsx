@@ -1,9 +1,7 @@
-import React, { useState } from "react";
+import React from "react";
 import { FcApproval, FcDisapprove } from "react-icons/fc";
 import { FaAngleDown } from "react-icons/fa";
 import useAuth from "../hooks/useAuth";
-import axios from "../api/axios";
-import { toast } from "react-toastify";
 
 const HomeHero = () => {
   const { auth } = useAuth();
@@ -36,16 +34,16 @@ const HomeHero = () => {
   return (
     <div>
       <div className="py-6 shadow rounded-md bg-primaryblue-50 p-5 mt-8">
-        <div className="flex items-center justify-between">
+        <div className="flex flex-col md:flex-row items-center justify-between">
           <div className="pb-4 flex items-center gap-4">
             <span className="font-bold bg-primary text-lg text-white p-3 rounded-full">
               {GetLetters(name)}
             </span>
-            <h3 className="text-2xl font-semibold ">{userData.email}</h3>
+            <h3 className="text-2xl font-semibold">{userData.email}</h3>
           </div>
         </div>
-        <div className="flex items-center gap-16">
-          <div className="flex flex-col">
+        <div className="flex flex-col md:flex-row items-start gap-8 md:gap-16">
+          <div className="flex flex-col flex-grow">
             <span className="text-sm text-gray-400">Identity Verification</span>
             <span
               className={`text-base font-bold ${
@@ -65,25 +63,27 @@ const HomeHero = () => {
               )}
             </span>
           </div>
-          <div className="flex flex-col">
+          <div className="flex flex-col flex-grow">
             <span className="text-sm text-gray-400">Time Zone</span>
             <span className="text-base font-semibold text-primary">
               {auth.user.timezone}
             </span>
           </div>
-          <div className="flex flex-col">
+          <div className="flex flex-col flex-grow">
             <span className="text-sm text-gray-400">Last Login</span>
             <span className="text-base font-semibold text-primary">
               {formatTimeStamp(userData.lastLogin)}
             </span>
           </div>
-          {/* <div className="flex flex-col">
+          {/* Uncomment this block if needed
+          <div className="flex flex-col flex-grow">
             <span className="text-sm text-gray-400">Currency</span>
-            <button className=" text-primary text-base font-semibold flex gap-3 items-center">
+            <button className="text-primary text-base font-semibold flex gap-3 items-center">
               <span>USD</span>
               <FaAngleDown />
             </button>
-          </div> */}
+          </div>
+          */}
         </div>
       </div>
     </div>

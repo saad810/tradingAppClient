@@ -4,7 +4,7 @@ import { createChart } from "lightweight-charts";
 import DemoTradeSideBar from "../TradingSideBar/DemoTradeSideBar";
 import useCandlestickData from "../../hooks/useCandlestickData";
 import useDemoTrade from "../../hooks/useDemoTrade";
-
+import { toast } from "react-toastify";
 const DemoTrading = () => {
   const { symbol } = useParams();
   const { candlestickData } = useCandlestickData(symbol, 5);
@@ -20,7 +20,9 @@ const DemoTrading = () => {
   } = useDemoTrade(symbol, candlestickData);
 
   const chartRef = useRef(null);
-
+  useEffect(() => {
+    toast.info("Demo trading YAY");
+  }, []);
   useEffect(() => {
     const chart = createChart(chartRef.current, {
       layout: {

@@ -140,7 +140,7 @@ const Navbar = () => {
 
 const FundsActions = ({ onDeposit, onWithdraw, balance }) => (
   <div className="flex items-center gap-3">
-    <span className=" py-1 px-3 text-base text-primaryblue-100 font-bold">{`Balance: ${parseFloat(
+    <span className=" py-1 px-3 text-base text-primaryblue-100 font-bold">{`Balance ${parseFloat(
       balance.toFixed(2)
     )} USD`}</span>
     <button

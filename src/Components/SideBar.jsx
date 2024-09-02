@@ -3,7 +3,7 @@ import { FaUser, FaSearch, FaSignOutAlt } from "react-icons/fa";
 import { Link, useNavigate } from "react-router-dom";
 import useLogout from "../hooks/useLogout";
 import useAuth from "../hooks/useAuth";
-
+import avatar from "./gorilla.png";
 const SideBar = () => {
   const { auth } = useAuth();
   const navigate = useNavigate();
@@ -18,8 +18,6 @@ const SideBar = () => {
     navigate("/auth");
   };
 
-  
-
   return (
     <div className="w-72 bg-bgOne p-6 z-10 fixed left-0 top-14 h-screen">
       <>
@@ -27,7 +25,7 @@ const SideBar = () => {
           <>
             <div className="flex flex-col items-start mb-6">
               <img
-                src="https://via.placeholder.com/100"
+                src={avatar}
                 alt="User Avatar"
                 className="w-24 h-24 mb-4"
               />
