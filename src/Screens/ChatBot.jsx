@@ -67,7 +67,6 @@ const ChatBot = () => {
         <h2 className="text-xl font-semibold text-primary mb-4">
           What do you want to know?
           <button
-            disabled={!chatHistory.length > 0}
             onClick={surprise}
             className="ml-2 bg-accent text-white py-1 px-3 rounded-full text-sm hover:bg-opacity-80"
           >
