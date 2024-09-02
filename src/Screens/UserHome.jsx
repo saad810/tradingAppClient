@@ -10,7 +10,7 @@ const UserHome = () => {
   const Authenticated = () => (
     <div>
       <div className="border-b">
-        <HomeHero />
+        <HomeHero isProfile={false} />
       </div>
       <div className="">
         <MarketsHome />

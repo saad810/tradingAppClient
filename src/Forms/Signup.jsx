@@ -97,7 +97,7 @@ const Signup = () => {
           </div>
           <div className="mt-8">
             <button className="w-full p-2 rounded bg-primary text-white font-semibold text-xl">
-              Login
+              Register
             </button>
           </div>
         </div>

@@ -10,6 +10,7 @@ import { Elements } from "@stripe/react-stripe-js";
 import { loadStripe } from "@stripe/stripe-js";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import OfflineModal from "./Components/OfflineModal";
 
 // Load the Stripe publishable key from environment variables
 const stripePromise = loadStripe(process.env.REACT_APP_STRIPE_PUBLISHABLE_KEY);
@@ -19,9 +20,8 @@ const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
   <React.StrictMode>
     <Elements stripe={stripePromise}>
-      {" "}
-      {/* Wrap your app in the Elements provider */}
       <AuthProvider>
+        <OfflineModal />
         <BrowserRouter>
           <Routes>
             <Route path="/*" element={<App />} />

@@ -37,15 +37,15 @@ const MarketsHome = () => {
   }, [searchQuery]); // Runs whenever the search query changes
 
   return (
-    <div>
+    <div className="px-4 md:px-8 lg:px-12">
       <div className="mt-5">
-        <div className="flex items-center justify-between py-4">
+        <div className="flex flex-col md:flex-row items-center justify-between py-4">
           <h3 className="text-3xl font-bold text-primary py-5">Hot Markets</h3>
-          <div className="border-2 border-gray-300 w-max flex items-center gap-2 pr-4 rounded">
+          <div className="flex items-center gap-2 w-full md:w-auto border-2 border-gray-300 pr-4 rounded">
             <input
               type="text"
               placeholder="Search markets..."
-              className="border-none px-4 py-2"
+              className="border-none px-4 py-2 w-full md:w-auto"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
             />
@@ -55,28 +55,30 @@ const MarketsHome = () => {
           </div>
         </div>
         {filteredData.length > 0 ? (
-          <table className="min-w-full border-collapse">
-            <thead>
-              <tr className="text-gray-400">
-                <th className="py-3 text-left font-medium text-sm">
-                  Market Name
-                </th>
-                <th className="py-3 text-left font-medium text-sm">
-                  Market Title
-                </th>
-                <th className="py-3 text-left font-medium text-sm">
-                  Submarket Title
-                </th>
-                <th className="py-3 text-left font-medium text-sm">Price</th>
-                <th className="py-3 text-left font-medium text-sm">Action</th>
-              </tr>
-            </thead>
-            <tbody>
-              {filteredData.map((market) => (
-                <MarketBar key={market.symbol} market={market} />
-              ))}
-            </tbody>
-          </table>
+          <div className="overflow-x-auto">
+            <table className="min-w-full border-collapse">
+              <thead>
+                <tr className="text-gray-400">
+                  <th className="py-3 text-left font-medium text-sm">
+                    Market Name
+                  </th>
+                  <th className="py-3 text-left font-medium text-sm">
+                    Market Title
+                  </th>
+                  <th className="py-3 text-left font-medium text-sm">
+                    Submarket Title
+                  </th>
+                  <th className="py-3 text-left font-medium text-sm">Price</th>
+                  <th className="py-3 text-left font-medium text-sm">Action</th>
+                </tr>
+              </thead>
+              <tbody>
+                {filteredData.map((market) => (
+                  <MarketBar key={market.symbol} market={market} />
+                ))}
+              </tbody>
+            </table>
+          </div>
         ) : (
           <div>No markets found.</div>
         )}

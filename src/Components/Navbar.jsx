@@ -11,7 +11,7 @@ import useDemoTrade from "../hooks/useDemoTrade";
 import { RiListSettingsFill } from "react-icons/ri";
 
 const Navbar = () => {
-  const { auth } = useAuth();
+  const { auth, setAuth } = useAuth();
   const { demoBalance } = useDemoTrade();
   const navigate = useNavigate();
   const [showSideBar, setShowSideBar] = useState(false);
@@ -33,25 +33,15 @@ const Navbar = () => {
   };
   const handleAccountSwith = () => {
     const currAcc = auth.currAccType;
-    if (auth && auth.user && auth.user.verified && auth.user.realTrade) {
-      let updatedAccountType;
-      // toggle the account type
-      if (currAcc === "demo") {
-        updatedAccountType = "real";
-      } else if (currAcc === "real") {
-        updatedAccountType = "demo";
-      } else {
-        updatedAccountType = "demo";
-      }
-
+    if (auth && auth.user && auth.user.verified) {
+      const updatedAccountType = currAcc === "demo" ? "real" : "demo";
       // update the local auth obj
       const updatedAuth = {
         ...auth,
         currAccType: updatedAccountType,
       };
-
+      setAuth(updatedAuth);
       // update the local storage
-
       localStorage.setItem("auth", JSON.stringify(updatedAuth));
     } else {
       navigate("/verify");

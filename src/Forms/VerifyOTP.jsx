@@ -13,6 +13,8 @@ const VerifyOTP = () => {
   const [isOtpSent, setIsOtpSent] = useState(false);
   const navigate = useNavigate();
   const { auth, setAuth } = useAuth();
+  const [loading, setLoading] = useState(false);
+  const [err, setErr] = useState(false);
   const form = useRef();
 
   const generateOtp = () => {
@@ -26,16 +28,33 @@ const VerifyOTP = () => {
     const generatedOtp = generateOtp();
 
     // Log the email to ensure it's the one you expect
-    console.log("Sending OTP to:", email);
+    console.log("Preparing to send OTP to:", email);
 
-    const templateParams = {
-      user_email: email, // Use the email entered by the user
-      message: generatedOtp,
-      from_name: "Syntho Next",
-      to_name: auth.user.name || "User",
-    };
+    // Set loading state to true
+    setLoading(true);
 
+    // First, save the OTP to the server
     try {
+      const response = await axios.post(
+        "/users/save-otp",
+        JSON.stringify({ email, otp: generatedOtp, userId: auth.user.id }), // Use the user-entered email here
+        {
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
+
+      console.log(response.data);
+
+      // If OTP is saved successfully, then send the email
+      const templateParams = {
+        user_email: email,
+        message: generatedOtp,
+        from_name: "Syntho Next",
+        to_name: auth.user.name || "User",
+      };
+
       const emailResponse = await emailjs.send(
         "service_vhq02r9",
         "template_aob5t88",
@@ -45,87 +64,32 @@ const VerifyOTP = () => {
 
       console.log("EmailJS SUCCESS!", emailResponse.status, emailResponse.text);
       setIsOtpSent(true);
-
-      try {
-        const response = await axios.post(
-          "/users/save-otp",
-          JSON.stringify({ email, otp: generatedOtp }), // Use the user-entered email here
-          {
-            headers: {
-              "Content-Type": "application/json",
-            },
-          }
-        );
-
-        console.log(response.data);
-        toast.success("OTP sent and saved successfully", {
+      toast.success("OTP sent and saved successfully", {
+        autoClose: 2000,
+      });
+    } catch (error) {
+      // Handle errors from saving OTP or sending email
+      setIsOtpSent(false);
+      if (error.response) {
+        console.error("Error during OTP verification:", error);
+        toast.error(error.response.data.message || "Failed to save OTP", {
           autoClose: 2000,
         });
-      } catch (error) {
-        console.error("Error during OTP verification:", error);
-        toast.error("Failed to save OTP", {
+      } else {
+        console.log("EmailJS FAILED...", error);
+        toast.error("Failed to send OTP", {
           autoClose: 2000,
         });
       }
-    } catch (error) {
-      console.log("EmailJS FAILED...", error.text);
-      toast.error("Failed to send OTP", {
-        autoClose: 2000,
-      });
+    } finally {
+      // Set loading state back to false
+      setLoading(false);
     }
   };
 
-  // const sendEmail = async (e) => {
-  //   e.preventDefault();
-  //   const generatedOtp = generateOtp();
-
-  //   const templateParams = {
-  //     user_email: email,
-  //     message: generatedOtp,
-  //   };
-
-  //   try {
-  //     const emailResponse = await emailjs.send(
-  //       "service_vhq02r9",
-  //       "template_aob5t88",
-  //       templateParams,
-  //       "pjzs6nn86Dbi-DcX6"
-  //     );
-
-  //     console.log("SUCCESS!", emailResponse.status, emailResponse.text);
-  //     setIsOtpSent(true);
-
-  //     try {
-  //       const response = await axios.post(
-  //         "/users/save-otp",
-  //         JSON.stringify({ email: auth.user.email, otp: generatedOtp }),
-  //         {
-  //           headers: {
-  //             "Content-Type": "application/json",
-  //           },
-  //         }
-  //       );
-
-  //       console.log(response.data);
-  //       toast.success("OTP sent and saved successfully", {
-  //         autoClose: 2000,
-  //       });
-  //     } catch (error) {
-  //       console.error("Error during OTP verification:", error);
-  //       toast.error("Failed to verify OTP ", {
-  //         autoClose: 2000,
-  //       });
-  //     }
-  //   } catch (error) {
-  //     console.log("FAILED...", error.text);
-  //     toast.error("Failed to send OTP", {
-  //       autoClose: 2000,
-  //     });
-  //   }
-  // };
-
   const handleVerifyOtp = async (e) => {
     e.preventDefault();
+    setLoading(true);
 
     try {
       const response = await axios.post(
@@ -139,24 +103,31 @@ const VerifyOTP = () => {
       );
 
       console.log(response.data);
-      setAuth({
-        ...auth,
-        user: { ...auth.user, isVerified: true, realTradeAllowed: true },
-      });
+      const updateAuth = () => {
+        setAuth((prevAuth) => ({
+          ...prevAuth,
+          user: { ...prevAuth.user, isVerified: true, realTradeAllowed: true },
+        }));
+      };
+      setAuth(updateAuth);
+      localStorage.setItem("auth", JSON.stringify(updateAuth));
+
       toast.success("OTP verified successfully", {
         autoClose: 2000,
       });
-      navigate("/auth");
+      navigate("/");
     } catch (error) {
       console.error("Error during OTP verification:", error);
-      toast.error("Failed to verify OTP", {
-        autoClose: 2000,
+      toast.error(error.response.data.message, {
+        autoClose: 1000,
       });
+    } finally {
+      setLoading(false);
     }
   };
 
   return (
-    <div className="max-w-xs mx-auto">
+    <div className="max-w-xs mx-auto mt-10">
       <h3 className="font-bold text-3xl py-1">Verify Your Email</h3>
       <span className="font-medium text-base">
         Enter your email to receive OTP
@@ -202,18 +173,18 @@ const VerifyOTP = () => {
             {isOtpSent ? (
               <button
                 type="submit"
-                className="w-full p-2 rounded bg-primary text-white font-semibold text-xl"
+                className="w-full p-2 rounded bg-primary text-white font-semibold text-base"
                 onClick={handleVerifyOtp}
               >
-                Verify OTP
+                {loading ? "Verifying ..." : "Verify OTP"}
               </button>
             ) : (
               <button
                 type="submit"
                 onClick={sendEmail}
-                className="w-full p-2 rounded bg-primary text-white font-semibold text-xl"
+                className="w-full p-2 rounded bg-primary text-white font-semibold text-base"
               >
-                Send OTP
+                {loading ? "Sending ..." : "Send OTP"}
               </button>
             )}
           </div>

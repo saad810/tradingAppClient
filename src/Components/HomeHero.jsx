@@ -2,8 +2,21 @@ import React from "react";
 import { FcApproval, FcDisapprove } from "react-icons/fc";
 import { FaAngleDown } from "react-icons/fa";
 import useAuth from "../hooks/useAuth";
-
-const HomeHero = () => {
+import { FaPencil } from "react-icons/fa6";
+import ProfileUpdate from "./Profile/ProfileUpdate";
+import { AiFillDelete } from "react-icons/ai";
+// import PasswordUpdate from "./Profile/PasswordUpdate";
+import PassUpdate from "./Profile/PassUpdate";
+import DeleteAccount from "./Profile/DeleteAccount";
+const HomeHero = ({
+  isProfile,
+  showUpdate,
+  showPasswordUpdate,
+  showDeleteAccount,
+  updateProfile,
+  updatePassword,
+  deleteAccount,
+}) => {
   const { auth } = useAuth();
   const userData = auth.user;
   const verified = userData.verified;
@@ -32,61 +45,95 @@ const HomeHero = () => {
   };
 
   return (
-    <div>
-      <div className="py-6 shadow rounded-md bg-primaryblue-50 p-5 mt-8">
-        <div className="flex flex-col md:flex-row items-center justify-between">
-          <div className="pb-4 flex items-center gap-4">
-            <span className="font-bold bg-primary text-lg text-white p-3 rounded-full">
-              {GetLetters(name)}
-            </span>
-            <h3 className="text-2xl font-semibold">{userData.email}</h3>
+    <>
+      <div>
+        <div className="py-10 shadow rounded-md bg-primaryblue-50 px-5 mt-8">
+          <div className="flex flex-col md:flex-row md:items-start items-center justify-between">
+            <div className="pb-4 flex items-center gap-4">
+              <span className="font-bold bg-primary text-lg text-white p-3 rounded-full">
+                {GetLetters(name)}
+              </span>
+              <h3 className="text-2xl font-semibold">{userData.email}</h3>
+            </div>
           </div>
-        </div>
-        <div className="flex flex-col md:flex-row items-start gap-8 md:gap-16">
-          <div className="flex flex-col flex-grow">
-            <span className="text-sm text-gray-400">Identity Verification</span>
-            <span
-              className={`text-base font-bold ${
-                verified ? "text-primary" : "text-red-600"
-              }`}
-            >
-              {verified ? (
-                <div className="flex items-center gap-1">
-                  <span>Verified</span>
-                  <FcApproval />
+          <div className="flex flex-col md:flex-row items-start gap-8 md:gap-16">
+            <div className="flex flex-col flex-grow">
+              <span className="text-sm text-gray-400">
+                Identity Verification
+              </span>
+              <span
+                className={`text-base font-bold ${
+                  verified ? "text-primary" : "text-red-600"
+                }`}
+              >
+                {verified ? (
+                  <div className="flex items-center gap-1">
+                    <span>Verified</span>
+                    <FcApproval />
+                  </div>
+                ) : (
+                  <div className="flex items-center gap-1">
+                    <span>Not Verified</span>
+                    <FcDisapprove className="text-xl" />
+                  </div>
+                )}
+              </span>
+            </div>
+            <div className="flex flex-col flex-grow">
+              <span className="text-sm text-gray-400">Time Zone</span>
+              <span className="text-base font-semibold text-primary">
+                {auth.user.timezone}
+              </span>
+            </div>
+            <div className="flex flex-col flex-grow">
+              <span className="text-sm text-gray-400">Last Login</span>
+              <span className="text-base font-semibold text-primary">
+                {formatTimeStamp(userData.lastLogin)}
+              </span>
+            </div>
+
+            {isProfile ? (
+              <>
+                <div className="flex flex-col gap- flex-grow">
+                  <span className="text-sm text-gray-400">Update Profle</span>
+                  <button
+                    className="text-primary text-base font-semibold flex gap-3 items-center"
+                    onClick={updateProfile}
+                  >
+                    Update <FaPencil />
+                  </button>
                 </div>
-              ) : (
-                <div className="flex items-center gap-1">
-                  <span>Not Verified</span>
-                  <FcDisapprove className="text-xl" />
+                <div className="flex flex-col gap- flex-grow">
+                  <span className="text-sm text-gray-400">Update Password</span>
+                  <button
+                    className="text-primary text-base font-semibold flex gap-3 items-center"
+                    onClick={updatePassword}
+                  >
+                    Password <FaPencil />
+                  </button>
                 </div>
-              )}
-            </span>
+                <div className="flex flex-col gap- flex-grow">
+                  <span className="text-sm text-red-400">Delete</span>
+                  <button
+                    className="text-red-600 text-base font-semibold flex gap-3 items-center"
+                    onClick={deleteAccount}
+                  >
+                    Delete <FaPencil />
+                  </button>
+                </div>
+              </>
+            ) : null}
           </div>
-          <div className="flex flex-col flex-grow">
-            <span className="text-sm text-gray-400">Time Zone</span>
-            <span className="text-base font-semibold text-primary">
-              {auth.user.timezone}
-            </span>
-          </div>
-          <div className="flex flex-col flex-grow">
-            <span className="text-sm text-gray-400">Last Login</span>
-            <span className="text-base font-semibold text-primary">
-              {formatTimeStamp(userData.lastLogin)}
-            </span>
-          </div>
-          {/* Uncomment this block if needed
-          <div className="flex flex-col flex-grow">
-            <span className="text-sm text-gray-400">Currency</span>
-            <button className="text-primary text-base font-semibold flex gap-3 items-center">
-              <span>USD</span>
-              <FaAngleDown />
-            </button>
-          </div>
-          */}
         </div>
       </div>
-    </div>
+      {showUpdate && isProfile && <ProfileUpdate onClose={updateProfile} />}
+      {showPasswordUpdate && isProfile && (
+        <PassUpdate onClose={updatePassword} />
+      )}
+      {showDeleteAccount && isProfile && (
+        <DeleteAccount onClose={deleteAccount} />
+      )}
+    </>
   );
 };
 

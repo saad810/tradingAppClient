@@ -55,13 +55,13 @@ const useTrade = (symbol, candlestickData) => {
   useEffect(() => {
     if (stake && selectedMultiplier && profitLoss !== null) {
       const tradeData = {
-        isDemo: true,
+        isDemo: false,
         tradePair: symbol,
         tradeEntry: buyInPrice,
         tradeClosePrice: buyOutPrice,
         profitVal: profitLoss,
         stake: stake,
-        tradeType: "real",
+        tradeType: "multiplier",
         multiplier: selectedMultiplier,
         tradeWinNum: calculateWinNum(profitLoss, selectedMultiplier, stake),
         tradeUserId: auth.user.id,

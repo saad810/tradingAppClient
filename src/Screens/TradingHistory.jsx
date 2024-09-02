@@ -25,11 +25,13 @@ const TradingHistory = () => {
     getTradeHistory();
   }, [auth.user.id]);
 
-  // Function to filter trades based on the selected tab
+  // Function to filter and sort trades based on the selected tab
   const filteredData = () => {
     const now = new Date();
-    return data.filter((trade) => {
-      const tradeDate = new Date(trade.createdAt); // Use the createdAt field for filtering
+
+    // Filter trades based on the selected tab
+    const filteredTrades = data.filter((trade) => {
+      const tradeDate = new Date(trade.createdAt);
       switch (selectedTab) {
         case "today":
           return tradeDate.toDateString() === now.toDateString();
@@ -45,6 +47,11 @@ const TradingHistory = () => {
           return true; // Show all trades if no filter is applied
       }
     });
+
+    // Sort the filtered trades in descending order (newer first)
+    return filteredTrades.sort(
+      (a, b) => new Date(b.createdAt) - new Date(a.createdAt)
+    );
   };
 
   const PreviewData = () => {
@@ -53,9 +60,10 @@ const TradingHistory = () => {
         <thead>
           <tr className="text-gray-400">
             <th className="py-3 text-left font-medium text-sm">Market Name</th>
-            <th className="py-3 text-left font-medium text-sm">Market Title</th>
+            <th className="py-3 text-left font-medium text-sm">Trade Type</th>
             <th className="py-3 text-left font-medium text-sm">Multiplier</th>
             <th className="py-3 text-left font-medium text-sm">Trade Amount</th>
+            <th className="py-3 text-left font-medium text-sm">Time</th>
           </tr>
         </thead>
         <tbody>
@@ -66,6 +74,7 @@ const TradingHistory = () => {
       </table>
     );
   };
+
   return (
     <div>
       <h3 className="text-3xl font-bold text-primary py-5">Trading History</h3>
@@ -108,13 +117,27 @@ const TradingHistory = () => {
           </button>
         </div>
 
-        <div>{data ? <PreviewData /> : <div>No data found.</div>}</div>
+        <div>
+          {data.length > 0 ? <PreviewData /> : <div>No data found.</div>}
+        </div>
       </div>
     </div>
   );
 };
 
 const HistoryBar = ({ data }) => {
+  const formatDate = (isoDate) => {
+    const date = new Date(isoDate);
+    const options = {
+      year: "numeric",
+      month: "numeric",
+      day: "numeric",
+      hour: "2-digit",
+      minute: "2-digit",
+      timeZoneName: "short",
+    };
+    return date.toLocaleString("en-US", options);
+  };
   return (
     <tr>
       <td className="py-2">
@@ -125,13 +148,16 @@ const HistoryBar = ({ data }) => {
         </div>
       </td>
       <td className="py-2">
-        <span>{data.marketTitle}</span>
+        <span>{data.tradeType === "demo" ? "Demo" : "Real"}</span>
       </td>
       <td className="py-2">
         <span>{data.multiplier}</span>
       </td>
       <td className="py-2">
         <span className="font-bold">{data.tradeAmount} USD</span>
+      </td>
+      <td className="py-2">
+        <span>{formatDate(data.createdAt)}</span>
       </td>
     </tr>
   );
