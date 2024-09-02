@@ -5,12 +5,17 @@ import { useNavigate } from "react-router-dom";
 import { Link } from "react-router-dom";
 import useAuth from "../hooks/useAuth";
 import useDemoTrade from "../hooks/useDemoTrade";
+import WithDraw from "./Payments/WithDraw";
+import Deposit from "./Payments/Deposit";
+
 
 const Navbar = () => {
   const navigate = useNavigate();
   const { auth, currentAccount, setCurrentAccount } = useAuth();
   const { demoBalance } = useDemoTrade();
   const [show, setShow] = useState(false);
+  const [showDeposit, setShowDeposit] = useState(false);
+  const [showWithdraw, setShowWithdraw] = useState(false);
 
   const demoAllowed = auth && auth.user && auth.user.demoAllowed;
 
@@ -36,6 +41,14 @@ const Navbar = () => {
     } else {
       navigate("/verify");
     }
+  };
+
+  const handleDeposit = () => {
+    setShowDeposit(true);
+  };
+
+  const handleWithdraw = () => {
+    setShowWithdraw(true);
   };
 
   return (
@@ -74,7 +87,7 @@ const Navbar = () => {
                       </span>
                     </div>
                   ) : (
-                    <FundsActions />
+                    <FundsActions onDeposit={handleDeposit} onWithdraw={handleWithdraw} />
                   )}
                   <button
                     className="bg-white py-1 px-2 text-base text-primary rounded"
@@ -84,7 +97,7 @@ const Navbar = () => {
                   </button>
                 </>
               ) : (
-                <FundsActions />
+                <FundsActions onDeposit={handleDeposit} onWithdraw={handleWithdraw} />
               )}
             </div>
           ) : (
@@ -106,16 +119,18 @@ const Navbar = () => {
         </div>
       </nav>
       {show && <SideBar />}
+      {showDeposit && <Deposit onClose={() => setShowDeposit(false)} />} {/* Add Deposit Modal */}
+      {showWithdraw && <WithDraw onClose={() => setShowWithdraw(false)} />} {/* Add Withdraw Modal */}
     </>
   );
 };
 
-const FundsActions = () => (
+const FundsActions = ({ onDeposit, onWithdraw }) => (
   <div className="flex items-center gap-3">
-    <button className="bg-white py-1 px-3 text-base text-primary rounded">
+    <button className="bg-white py-1 px-3 text-base text-primary rounded" onClick={onDeposit}>
       Deposit
     </button>
-    <button className="bg-secondary py-1 px-3 text-base text-white rounded">
+    <button className="bg-secondary py-1 px-3 text-base text-white rounded" onClick={onWithdraw}>
       Withdraw
     </button>
   </div>

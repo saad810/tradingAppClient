@@ -1,17 +1,14 @@
 import React, { useState } from "react";
-
+import ReactMarkdown from "react-markdown";
 const ChatBot = () => {
   const [err, setErr] = useState("");
-  const [input, setInput] = useState("");
-  const [response, setResponse] = useState("sample respose");
   const [value, setValue] = useState("");
   const [chatHistory, setChatHistory] = useState([]);
 
-  const handleAsk = () => {};
   const handleClear = () => {
-    // setInput("");
-    // setErr("");
-    // setResponse("");
+    setErr("");
+    setValue("");
+    setChatHistory([]);
   };
 
   const getResponse = async () => {
@@ -24,20 +21,33 @@ const ChatBot = () => {
         message: value,
         chatHistory,
       };
-      const response = await fetch("http://localhost:5000/gemini", {
+      const response = await fetch("http://localhost:3500/gemini", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
         body: JSON.stringify(data),
       });
-        const result = await response.json();
-        console.log(data);
+
+      if (!response.ok) {
+        throw new Error("Network response was not ok");
+      }
+
+      const result = await response.json();
+      console.log(result);
+      // Update chat history with user and model responses
+      setChatHistory((prev) => [
+        ...prev,
+        { role: "user", parts: value },
+        { role: "model", parts: result.message }, // Assuming result.message contains the response text
+      ]);
+      setValue(""); // Clear the input after sending
     } catch (error) {
-      console.log(error);
+      console.error(error);
       setErr("Error fetching response");
     }
   };
+
   const surpriseOptions = [
     "Surprise me with the latest on Derivatives Trading!",
     "Interested in learning how to trade Synthetic Indices? Let’s explore the options!",
@@ -45,14 +55,14 @@ const ChatBot = () => {
     "Surprise me with some effective risk management strategies for trading!",
     "How about tips on the best times to trade synthetic indices?",
   ];
+
   const surprise = () => {
-    const randomIndex =
-      surpriseOptions[Math.floor(Math.random() * surpriseOptions.length)];
-    setValue(randomIndex);
+    const randomIndex = Math.floor(Math.random() * surpriseOptions.length);
+    setValue(surpriseOptions[randomIndex]);
   };
 
   return (
-    <div className="max-w-3xl mx-auto mt-10 bg-white rounded-xl overflow-hidden">
+    <div className="max-w-3xl mx-auto mt-10 bg-white rounded-xl overflow-hidden shadow-lg">
       <section className="p-6">
         <h2 className="text-xl font-semibold text-primary mb-4">
           What do you want to know?
@@ -74,7 +84,7 @@ const ChatBot = () => {
           />
           {!err ? (
             <button
-              onClick={handleAsk}
+              onClick={getResponse}
               className="ml-3 bg-primary text-white py-2 px-4 rounded-md transition duration-200 hover:bg-opacity-80"
             >
               Ask
@@ -90,9 +100,21 @@ const ChatBot = () => {
         </div>
         {err && <p className="text-red-500 mt-2">{err}</p>}
         <div className="mt-4">
-          {response && (
-            <div className="bg-gray-100 p-4 rounded-md">
-              <p className="text-gray-700">{response}</p>
+          {chatHistory.length > 0 && (
+            <div className="bg-gray-100 p-4 rounded-md max-h-60 overflow-y-auto">
+              {chatHistory.map((chat, index) => (
+                <div
+                  key={index}
+                  className={`mb-2 ${
+                    chat.role === "user" ? "text-primary" : "text-gray-700"
+                  }`}
+                >
+                  <strong>
+                    {chat.role.charAt(0).toUpperCase() + chat.role.slice(1)}:
+                  </strong>{" "}
+                  <ReactMarkdown>{chat.parts}</ReactMarkdown>
+                </div>
+              ))}
             </div>
           )}
         </div>

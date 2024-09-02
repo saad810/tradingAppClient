@@ -1,48 +1,139 @@
-import React, { useState, useEffect, useRef } from "react";
-import { FaArrowRight } from "react-icons/fa6";
-import io from "socket.io-client";
-import axios from "axios";
-import { IoMdSend } from "react-icons/io";
-
-const socket = io("http://localhost:3500"); // Replace with your server URL if different
+import React, { useState } from "react";
 
 const ChatBox = () => {
-  const [messages, setMessages] = useState([]);
-  const [message, setMessage] = useState("");
-  const [startNew, setStartNew] = useState(false);
-  const [user, setUser] = useState({
-    _id: "123",
-    username: "johndoe",
-  });
-  const messagesEndRef = useRef(null); // Reference for scrolling to the bottom
+  const [chatStarted, setChatStarted] = useState(false);
+  const [selectedQuestion, setSelectedQuestion] = useState(null);
 
-  useEffect(() => {
-    // Listen for incoming messages
-    const handleMessage = (data) => {
-      setMessages((prevMessages) => [...prevMessages, data]);
-    };
+  const questions = {
+    "What's new in derivatives trading?": {
+      answer: "Options trading is on the rise! 'Iron Condor' strategies are gaining popularity, especially with AI-powered predictions. Curious to dive deeper?",
+      link: "https://wa.me/1234567890",
+      moreQuestions: [
+        "What are the top derivatives to trade?",
+        "How do I choose a derivatives trading strategy?"
+      ]
+    },
+    "What are the top derivatives to trade?": {
+      answer: "The most traded derivatives include futures and options on indices, commodities, and forex. The choice depends on your market knowledge and risk tolerance.",
+      link: "https://wa.me/1234567890",
+      moreQuestions: [
+        "What's new in derivatives trading?",
+        "How do I choose a derivatives trading strategy?"
+      ]
+    },
+    "How do I choose a derivatives trading strategy?": {
+      answer: "Choosing a strategy involves understanding market trends and volatility. Popular strategies include 'Straddles' for volatile markets and 'Iron Condor' for range-bound markets.",
+      link: "https://wa.me/1234567890",
+      moreQuestions: [
+        "What's new in derivatives trading?",
+        "What are the top derivatives to trade?"
+      ]
+    },
+    "How do I start trading synthetic indices?": {
+      answer: "Synthetic indices offer 24/7 trading, mirroring real markets. Begin with price action strategies and tools like RSI. Timing your trades is crucial! Want to explore further? 📊",
+      link: "https://wa.me/1234567890",
+      moreQuestions: [
+        "What are synthetic indices?",
+        "Can I use leverage with synthetic indices?"
+      ]
+    },
+    "What are synthetic indices?": {
+      answer: "Synthetic indices are financial instruments that mimic the behavior of real-world indices but are not affected by real-world events like economic news.",
+      link: "https://wa.me/1234567890",
+      moreQuestions: [
+        "How do I start trading synthetic indices?",
+        "Can I use leverage with synthetic indices?"
+      ]
+    },
+    "Can I use leverage with synthetic indices?": {
+      answer: "Yes, leverage can be used when trading synthetic indices. However, it's important to understand the risks involved, as leverage can amplify both gains and losses.",
+      link: "https://wa.me/1234567890",
+      moreQuestions: [
+        "How do I start trading synthetic indices?",
+        "What are synthetic indices?"
+      ]
+    },
+    "Can I get a quick overview of Forex trading strategies?": {
+      answer: "Absolutely! Consider strategies like 'Trend Following' or 'Carry Trade.' Also, keep an eye on economic events—they can create big moves! Interested in more insights? 🌐",
+      link: "https://wa.me/1234567890",
+      moreQuestions: [
+        "What is the best time frame for Forex trading?",
+        "How do I manage risk in Forex trading?"
+      ]
+    },
+    "What is the best time frame for Forex trading?": {
+      answer: "The best time frame depends on your trading style. Scalpers prefer 1-15 minute charts, while swing traders use 1-hour to daily charts for broader trends.",
+      link: "https://wa.me/1234567890",
+      moreQuestions: [
+        "Can I get a quick overview of Forex trading strategies?",
+        "How do I manage risk in Forex trading?"
+      ]
+    },
+    "How do I manage risk in Forex trading?": {
+      answer: "Risk management in Forex trading involves using stop-loss orders, proper position sizing, and avoiding over-leveraging. Stick to the '1% Rule' to protect your capital.",
+      link: "https://wa.me/1234567890",
+      moreQuestions: [
+        "Can I get a quick overview of Forex trading strategies?",
+        "What is the best time frame for Forex trading?"
+      ]
+    },
+    "What are some effective risk management tips?": {
+      answer: "Stick to the '1% Rule' and use stop-loss orders. Diversifying your portfolio is also essential. Consistent risk management is the cornerstone of successful trading! Need additional advice? 🛡️",
+      link: "https://wa.me/1234567890",
+      moreQuestions: [
+        "What is the 1% rule in trading?",
+        "How do I set up stop-loss orders?"
+      ]
+    },
+    "What is the 1% rule in trading?": {
+      answer: "The '1% Rule' means risking no more than 1% of your capital on a single trade. This strategy helps minimize losses and protect your account from significant drawdowns.",
+      link: "https://wa.me/1234567890",
+      moreQuestions: [
+        "What are some effective risk management tips?",
+        "How do I set up stop-loss orders?"
+      ]
+    },
+    "How do I set up stop-loss orders?": {
+      answer: "Stop-loss orders can be set at a specific price point, percentage loss, or support/resistance level. This automates selling when the market moves against your position.",
+      link: "https://wa.me/1234567890",
+      moreQuestions: [
+        "What are some effective risk management tips?",
+        "What is the 1% rule in trading?"
+      ]
+    },
+    "When is the best time to trade synthetic indices?": {
+      answer: "Peak trading happens during global market overlaps. Early and late session hours also offer good opportunities. Want more timing tips? ⏰",
+      link: "https://wa.me/1234567890",
+      moreQuestions: [
+        "How do market overlaps affect trading?",
+        "What are the best hours for synthetic indices?"
+      ]
+    },
+    "How do market overlaps affect trading?": {
+      answer: "Market overlaps occur when major trading sessions are open simultaneously, increasing volatility and liquidity, offering more trading opportunities.",
+      link: "https://wa.me/1234567890",
+      moreQuestions: [
+        "When is the best time to trade synthetic indices?",
+        "What are the best hours for synthetic indices?"
+      ]
+    },
+    "What are the best hours for synthetic indices?": {
+      answer: "The best hours depend on your strategy, but early morning and late evening (in your local time) often present good opportunities due to market activity.",
+      link: "https://wa.me/1234567890",
+      moreQuestions: [
+        "When is the best time to trade synthetic indices?",
+        "How do market overlaps affect trading?"
+      ]
+    },
+  };
 
-    socket.on("message", handleMessage);
-    return () => {
-      socket.off("message", handleMessage);
-    };
-  }, []);
-
-  useEffect(() => {
-    // Scroll to the bottom when new messages arrive
-    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
-  }, [messages]);
-
-  const sendMessage = (e) => {
-    e.preventDefault(); // Prevent form submission from reloading the page
-    if (message.trim()) {
-      socket.emit("sendMessage", { sender: user._id, text: message });
-      setMessage("");
-    }
+  const handleQuestionClick = (question) => {
+    setSelectedQuestion(questions[question]);
   };
 
   const startNewChat = () => {
-    setStartNew(true);
+    setChatStarted(true);
+    setSelectedQuestion(null);
   };
 
   return (
@@ -52,47 +143,55 @@ const ChatBox = () => {
           Chat with us
         </div>
         <div className="flex-1 overflow-y-auto p-2 max-h-72 min-h-72">
-          {/* Chat messages */}
-          {messages.map((msg, index) => (
-            <div className="flex gap-2 items-center mb-2" key={index}>
-              <div className="bg-primary text-white p-2 rounded-lg">
-                {msg.text}
+          {!chatStarted ? (
+            <button
+              onClick={startNewChat}
+              type="button"
+              className="bg-primary text-white text-center py-4 px-6 rounded-b-lg"
+            >
+              Start a new chat
+            </button>
+          ) : selectedQuestion ? (
+            <>
+              <div className="mb-2">
+                <div className="bg-primary text-white p-2 rounded-lg">
+                  {selectedQuestion.answer}
+                </div>
+                <div className="mt-2">
+                  <a href={selectedQuestion.link} target="_blank" rel="noopener noreferrer" className="text-blue-500 underline">
+                    Chat with our representative on WhatsApp
+                  </a>
+                </div>
               </div>
-              <FaArrowRight />
+              <div className="mt-4">
+                <strong>Related Questions:</strong>
+                <ul className="list-disc list-inside">
+                  {selectedQuestion.moreQuestions.map((q, index) => (
+                    <li
+                      key={index}
+                      className="cursor-pointer text-blue-500 mt-1 hover:underline"
+                      onClick={() => handleQuestionClick(q)}
+                    >
+                      {q}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            </>
+          ) : (
+            <div>
+              {Object.keys(questions).map((q, index) => (
+                <div
+                  key={index}
+                  className="cursor-pointer mb-2 p-2 bg-gray-100 rounded-lg"
+                  onClick={() => handleQuestionClick(q)}
+                >
+                  {q}
+                </div>
+              ))}
             </div>
-          ))}
-          {/* Scroll target */}
-          <div ref={messagesEndRef} />
+          )}
         </div>
-
-        {/* Input form */}
-        {startNew ? (
-          <form onSubmit={sendMessage}>
-            <div className="flex items-center gap-2 py-2 px-1">
-              <input
-                type="text"
-                value={message}
-                onChange={(e) => setMessage(e.target.value)}
-                placeholder="Type your message here"
-                className="w-full py-2 px-2 text-sm rounded bg-white"
-              />
-              <button
-                type="submit"
-                className="bg-primary text-white text-center p-2 rounded-full"
-              >
-                <IoMdSend />
-              </button>
-            </div>
-          </form>
-        ) : (
-          <button
-            onClick={startNewChat}
-            type="button"
-            className="bg-primary text-white text-center py-4 rounded-b-lg"
-          >
-            Start a new chat
-          </button>
-        )}
       </div>
     </div>
   );
