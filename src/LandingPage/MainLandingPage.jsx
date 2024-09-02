@@ -13,7 +13,7 @@ const MainLandingPage = () => {
   return (
     <div>
       <div
-        className="relative h-screen w-full bg-cover bg-center flex"
+        className="relative min-h-screen w-full bg-cover bg-center flex flex-col md:flex-row"
         style={{
           backgroundImage: `url(${bgImage})`,
         }}
@@ -23,27 +23,31 @@ const MainLandingPage = () => {
           <img
             src={hero}
             alt="MacBook"
-            className="max-w-full max-h-3/4 object-contain" // Ensures the image maintains its aspect ratio
+            className="max-w-full h-auto object-contain"
           />
         </div>
 
         {/* Right Side: Text and Button */}
-        <div className="flex items-center justify-center w-full p-8 md:w-1/2">
-          <div className="flex flex-col items-start w-full max-w-2xl">
-            <img src={fontBrand} alt="Brand Logo" className="mb-4" />
-            <h1 className="text-5xl font-bold leading-snug">
+        <div className="flex items-center justify-center w-full p-4 md:p-8 md:w-1/2">
+          <div className="flex flex-col items-center md:items-start w-full max-w-2xl text-center md:text-left">
+            <img
+              src={fontBrand}
+              alt="Brand Logo"
+              className="mb-4 mx-auto md:mx-0 w-32 h-auto" // Adjust size for smaller screens
+            />
+            <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold leading-snug">
               Simplify your trading, amplify your returns.
             </h1>
-
             <button
               onClick={navigateLogin}
-              className="mt-6 px-6 py-4 bg-primary text-white text-lg rounded hover:bg-primaryblue-950 transition"
+              className="mt-6 px-4 py-3 md:px-6 md:py-4 bg-primary text-white text-sm sm:text-base md:text-lg rounded hover:bg-primaryblue-950 transition"
             >
               Register Now
             </button>
           </div>
         </div>
       </div>
+
       <div>
         <AboutUs />
       </div>
