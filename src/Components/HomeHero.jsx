@@ -6,7 +6,7 @@ import axios from "../api/axios";
 import { toast } from "react-toastify";
 
 const HomeHero = () => {
-  const { auth, currentAccount } = useAuth();
+  const { auth } = useAuth();
   const userData = auth.user;
   const verified = userData.verified;
   const name = userData.name || "No Username";
@@ -42,11 +42,6 @@ const HomeHero = () => {
               {GetLetters(name)}
             </span>
             <h3 className="text-2xl font-semibold ">{userData.email}</h3>
-          </div>
-          <div className="pr-14">
-            <div className="text-2xl font-bold text-primary">
-              {currentAccount}
-            </div>
           </div>
         </div>
         <div className="flex items-center gap-16">

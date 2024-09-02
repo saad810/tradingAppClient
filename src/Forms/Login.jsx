@@ -28,8 +28,13 @@ const Login = () => {
         withCredentials: true, // This should be part of the same configuration object
       });
 
-      console.log(response.data);
-      setAuth(response.data);
+      // console.log(response.data);
+      const updatedAuth = {
+        ...response.data,
+        currAccType: "demo",
+      };
+      console.log("update auth", updatedAuth);
+      setAuth(updatedAuth);
       toast.success("Login Successful", {
         autoClose: 2000,
       });

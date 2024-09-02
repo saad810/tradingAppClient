@@ -3,14 +3,13 @@ import { useParams } from "react-router-dom";
 import { createChart } from "lightweight-charts";
 
 import useCandlestickData from "../../hooks/useCandlestickData";
-import useDemoTrade from "../../hooks/useDemoTrade";
+import useTrade from "../../hooks/useTrade";
 import RealTradeSideBar from "../TradingSideBar/RealTradeSideBar";
 
 const RealTrading = () => {
   const { symbol } = useParams();
   const { candlestickData } = useCandlestickData(symbol, 5);
   const {
-    demoBalance,
     stake,
     setStake,
     selectedMultiplier,
@@ -18,7 +17,7 @@ const RealTrading = () => {
     currentPrice,
     handleBuyIn,
     handleBuyOut,
-  } = useDemoTrade(symbol, candlestickData);
+  } = useTrade(symbol, candlestickData);
 
   const chartRef = useRef(null);
 
@@ -47,6 +46,7 @@ const RealTrading = () => {
 
   return (
     <div className="flex">
+      <h1>real</h1>
       <div style={{ width: "1180px", height: "500px" }} className="mt-3">
         <div ref={chartRef} style={{ width: "100%", height: "100%" }}></div>
       </div>

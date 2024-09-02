@@ -9,7 +9,7 @@ const WithDraw = ({ onClose }) => {
   const [amount, setAmount] = useState("");
   const [error, setError] = useState(null);
   const [message, setMessage] = useState("");
-  const { auth } = useAuth();
+  const { auth, setAuth } = useAuth();
 
   const handleWithdraw = async (e) => {
     e.preventDefault();
@@ -17,12 +17,31 @@ const WithDraw = ({ onClose }) => {
     setMessage("");
 
     try {
-      const response = await axios.post("/api/withdraw", {
-        userId: auth.user._id,
-        amount: parseFloat(amount),
+      const response = await axios.post("/payment/withdraw", {
+        paymentIntentId: auth.wallet.stripeId,
+        amount: amount,
       });
 
       setMessage(response.data.message);
+      setAuth((prev) => ({
+        ...prev,
+        wallet: {
+          ...prev.wallet,
+          balance: prev.wallet.balance - parseFloat(amount),
+        },
+      }));
+
+      localStorage.setItem(
+        "auth",
+        JSON.stringify({
+          ...auth,
+          wallet: {
+            ...auth.wallet,
+            balance: auth.wallet.balance - parseFloat(amount),
+          },
+        })
+      );
+
       setAmount("");
     } catch (error) {
       console.error("Error during withdrawal:", error);

@@ -8,7 +8,6 @@ import useDemoTrade from "../hooks/useDemoTrade";
 import WithDraw from "./Payments/WithDraw";
 import Deposit from "./Payments/Deposit";
 
-
 const Navbar = () => {
   const navigate = useNavigate();
   const { auth, currentAccount, setCurrentAccount } = useAuth();
@@ -33,11 +32,17 @@ const Navbar = () => {
 
   const handleSwitchAccount = () => {
     if (auth && auth.user && auth.user.verified) {
-      if (currentAccount === "demo") {
-        setCurrentAccount("real");
-      } else {
-        setCurrentAccount("demo");
-      }
+      const newAccountType = currentAccount === "demo" ? "real" : "demo";
+      setCurrentAccount(newAccountType);
+
+      // Update auth with new current account type
+      const updatedAuth = {
+        ...auth,
+        currAccType: newAccountType,
+      };
+
+      // Store updated auth in local storage
+      localStorage.setItem("auth", JSON.stringify(updatedAuth));
     } else {
       navigate("/verify");
     }
@@ -83,11 +88,15 @@ const Navbar = () => {
                         Balance
                       </span>
                       <span className="font-semibold text-lg text-primaryblue-200">
-                        {parseFloat(demoBalance.toFixed(2))} USD
+                        {`${parseFloat(demoBalance.toFixed(2))} USD`}
                       </span>
                     </div>
                   ) : (
-                    <FundsActions onDeposit={handleDeposit} onWithdraw={handleWithdraw} />
+                    <FundsActions
+                      onDeposit={handleDeposit}
+                      onWithdraw={handleWithdraw}
+                      balance={auth.wallet.balance} // Pass balance for real account
+                    />
                   )}
                   <button
                     className="bg-white py-1 px-2 text-base text-primary rounded"
@@ -97,7 +106,11 @@ const Navbar = () => {
                   </button>
                 </>
               ) : (
-                <FundsActions onDeposit={handleDeposit} onWithdraw={handleWithdraw} />
+                <FundsActions
+                  onDeposit={handleDeposit}
+                  onWithdraw={handleWithdraw}
+                  balance={auth?.wallet?.balance} // Pass balance for real account
+                />
               )}
             </div>
           ) : (
@@ -119,18 +132,27 @@ const Navbar = () => {
         </div>
       </nav>
       {show && <SideBar />}
-      {showDeposit && <Deposit onClose={() => setShowDeposit(false)} />} {/* Add Deposit Modal */}
-      {showWithdraw && <WithDraw onClose={() => setShowWithdraw(false)} />} {/* Add Withdraw Modal */}
+      {showDeposit && <Deposit onClose={() => setShowDeposit(false)} />}
+      {showWithdraw && <WithDraw onClose={() => setShowWithdraw(false)} />}
     </>
   );
 };
 
-const FundsActions = ({ onDeposit, onWithdraw }) => (
+const FundsActions = ({ onDeposit, onWithdraw, balance }) => (
   <div className="flex items-center gap-3">
-    <button className="bg-white py-1 px-3 text-base text-primary rounded" onClick={onDeposit}>
+    <span className=" py-1 px-3 text-base text-primaryblue-100 font-bold">{`Balance: ${parseFloat(
+      balance.toFixed(2)
+    )} USD`}</span>
+    <button
+      className="bg-white py-1 px-3 text-base text-primary rounded"
+      onClick={onDeposit}
+    >
       Deposit
     </button>
-    <button className="bg-secondary py-1 px-3 text-base text-white rounded" onClick={onWithdraw}>
+    <button
+      className="bg-secondary py-1 px-3 text-base text-white rounded"
+      onClick={onWithdraw}
+    >
       Withdraw
     </button>
   </div>

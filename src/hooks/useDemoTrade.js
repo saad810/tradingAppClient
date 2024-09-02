@@ -130,4 +130,5 @@ const useDemoTrade = (symbol, candlestickData) => {
   };
 };
 
+
 export default useDemoTrade;

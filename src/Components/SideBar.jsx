@@ -18,6 +18,8 @@ const SideBar = () => {
     navigate("/auth");
   };
 
+  
+
   return (
     <div className="w-72 bg-bgOne p-6 z-10 fixed left-0 top-14 h-screen">
       <>
@@ -40,14 +42,12 @@ const SideBar = () => {
                 <span className="text-2xl">
                   <FaUser />
                 </span>
-                <span className="text-lg font-medium">
-                  My profile
-                </span>
+                <span className="text-lg font-medium">My profile</span>
               </Link>
               <hr className="border-gray-400" />
 
               {/* Conditionally render Trade History if realTradeAllowed is true */}
-              {auth.user.realTradeAllowed && (
+              {auth.currAccType === "real" ? (
                 <>
                   <li className="flex items-center space-x-2">
                     <span className="text-2xl">
@@ -59,7 +59,7 @@ const SideBar = () => {
                   </li>
                   <hr className="border-gray-400" />
                 </>
-              )}
+              ) : null}
 
               <li
                 className="flex items-center space-x-2 cursor-pointer"

@@ -8,7 +8,7 @@ import Modal from "../Modal";
 const Deposit = ({ onClose }) => {
   const stripe = useStripe();
   const elements = useElements();
-  const { auth } = useAuth();
+  const { auth, setAuth } = useAuth();
   const [amount, setAmount] = useState("");
   const [error, setError] = useState(null);
   const [message, setMessage] = useState(null);
@@ -37,11 +37,28 @@ const Deposit = ({ onClose }) => {
 
     try {
       const response = await axios.post("/payment/deposit", {
-        userId: auth.user._id,
+        email: auth.user.email,
         amount: parseFloat(amount),
-        token: paymentMethod.id,
+        paymentMethodId: paymentMethod.id, // Use paymentMethodId instead of token
       });
-      console.log(response.data);
+
+      setAuth((prev) => ({
+        ...prev,
+        wallet: {
+          ...response.data,
+        },
+      }));
+
+      localStorage.setItem(
+        "auth",
+        JSON.stringify({
+          ...auth,
+          wallet: {
+            ...response.data,
+          },
+        })
+      );
+
       setMessage(response.data.message);
       setAmount("");
     } catch (error) {
