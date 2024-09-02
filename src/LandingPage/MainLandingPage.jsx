@@ -3,8 +3,8 @@ import hero from "./assets/8asdas52 1 (1).png";
 import bgImage from "./assets/candlesticks-bg.png";
 import fontBrand from "./assets/Group.png";
 import { useNavigate } from "react-router-dom";
-import FAQSection from "../Components/FAQSection";
-import AboutUs from "../Components/AboutUs";
+import FAQSection from "../Components/LandingPage/FAQSection";
+import AboutUs from "../Components/LandingPage/AboutUs";
 const MainLandingPage = () => {
   const navigate = useNavigate();
   const navigateLogin = () => {

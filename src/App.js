@@ -8,7 +8,6 @@ import GlobalLayout from "./Layout/GlobalLayout";
 import UserHome from "./Screens/UserHome";
 import TradingChartsScreen from "./Screens/TradingChartsScreen";
 import MarketsScreen from "./Screens/MarketsScreen";
-import AdminDashBoard from "./Screens/admin/AdminDashBoard";
 import RequireAuth from "./utils/RequireAuth";
 import TradingHistory from "./Screens/TradingHistory";
 import VerifyOTP from "./Forms/VerifyOTP";
@@ -24,20 +23,17 @@ const App = () => {
       </Route>
       <Route path="/privacy-policy" element={<h1>Privacy</h1>} />
       <Route path="/terms" element={<h1>Terms</h1>} />
-      {/* <Route element={<RequireAuth />}> */}
-      <Route path="/" element={<GlobalLayout />}>
-        <Route path="" element={<UserHome />} />
-        <Route path="profile" element={<ProfileScreen />} />
-        <Route path="verify" element={<VerifyOTP />} />
-        <Route path="markets" element={<MarketsScreen />} />
-        <Route path="markets/:symbol" element={<TradingChartsScreen />} />
-        <Route path="history" element={<TradingHistory />} />
-        <Route path="chat" element={<ChatBot />} />
+      <Route element={<RequireAuth />}>
+        <Route path="/" element={<GlobalLayout />}>
+          <Route path="" element={<UserHome />} />
+          <Route path="profile" element={<ProfileScreen />} />
+          <Route path="verify" element={<VerifyOTP />} />
+          <Route path="markets" element={<MarketsScreen />} />
+          <Route path="markets/:symbol" element={<TradingChartsScreen />} />
+          <Route path="history" element={<TradingHistory />} />
+          <Route path="chat" element={<ChatBot />} />
+        </Route>
       </Route>
-      <Route path="admin">
-        <Route path="" element={<AdminDashBoard />} />
-      </Route>
-      {/* </Route> */}
       <Route path="*" element={<div>404</div>} />
     </Routes>
   );

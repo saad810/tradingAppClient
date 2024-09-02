@@ -1,27 +1,62 @@
 import React, { useState } from "react";
 import { RxHamburgerMenu } from "react-icons/rx";
-import SideBar from "./SideBar";
-import { useNavigate } from "react-router-dom";
-import { Link } from "react-router-dom";
+import { BiSolidDollarCircle } from "react-icons/bi";
+import { FaArrowDown, FaArrowUp, FaRobot } from "react-icons/fa";
 import useAuth from "../hooks/useAuth";
-import useDemoTrade from "../hooks/useDemoTrade";
-import WithDraw from "./Payments/WithDraw";
+import { Link, useNavigate } from "react-router-dom";
 import Deposit from "./Payments/Deposit";
+import WithDraw from "./Payments/WithDraw";
+import SideBar from "./SideBar";
+import useDemoTrade from "../hooks/useDemoTrade";
+import { RiListSettingsFill } from "react-icons/ri";
 
 const Navbar = () => {
-  const navigate = useNavigate();
-  const { auth, currentAccount, setCurrentAccount } = useAuth();
+  const { auth } = useAuth();
   const { demoBalance } = useDemoTrade();
-  const [show, setShow] = useState(false);
+  const navigate = useNavigate();
+  const [showSideBar, setShowSideBar] = useState(false);
+  const [showMobileNav, setShowMobileNav] = useState(false);
   const [showDeposit, setShowDeposit] = useState(false);
   const [showWithdraw, setShowWithdraw] = useState(false);
 
-  const demoAllowed = auth && auth.user && auth.user.demoAllowed;
-
-  const toggleSidebar = () => {
-    setShow(!show);
+  const toggleSideBar = () => {
+    setShowSideBar(!showSideBar);
   };
+  const toggleMobileNav = () => {
+    setShowMobileNav(!showMobileNav);
+  };
+  const toggleDeposit = () => {
+    setShowDeposit(!showDeposit);
+  };
+  const toggleWithdraw = () => {
+    setShowWithdraw(!showWithdraw);
+  };
+  const handleAccountSwith = () => {
+    const currAcc = auth.currAccType;
+    if (auth && auth.user && auth.user.verified && auth.user.realTrade) {
+      let updatedAccountType;
+      // toggle the account type
+      if (currAcc === "demo") {
+        updatedAccountType = "real";
+      } else if (currAcc === "real") {
+        updatedAccountType = "demo";
+      } else {
+        updatedAccountType = "demo";
+      }
 
+      // update the local auth obj
+      const updatedAuth = {
+        ...auth,
+        currAccType: updatedAccountType,
+      };
+
+      // update the local storage
+
+      localStorage.setItem("auth", JSON.stringify(updatedAuth));
+    } else {
+      navigate("/verify");
+    }
+  };
   const navigateLogin = () => {
     navigate("/auth");
   };
@@ -30,46 +65,23 @@ const Navbar = () => {
     navigate("/auth/signup");
   };
 
-  const handleSwitchAccount = () => {
-    if (auth && auth.user && auth.user.verified) {
-      const newAccountType = currentAccount === "demo" ? "real" : "demo";
-      setCurrentAccount(newAccountType);
-
-      // Update auth with new current account type
-      const updatedAuth = {
-        ...auth,
-        currAccType: newAccountType,
-      };
-
-      // Store updated auth in local storage
-      localStorage.setItem("auth", JSON.stringify(updatedAuth));
-    } else {
-      navigate("/verify");
-    }
-  };
-
-  const handleDeposit = () => {
-    setShowDeposit(true);
-  };
-
-  const handleWithdraw = () => {
-    setShowWithdraw(true);
-  };
-
   return (
     <>
-      <nav className="container mx-auto px-10 bg-primary py-3">
-        <div className="flex items-center justify-between">
-          <div className="flex items-center gap-5">
-            <button onClick={toggleSidebar}>
-              <RxHamburgerMenu className="text-3xl text-white" />
-            </button>
+      <nav className="flex items-center justify-between px-12 bg-primary py-3">
+        <div className="flex items-center gap-4">
+          <button onClick={toggleSideBar}>
+            <RxHamburgerMenu className="text-3xl text-white" />
+          </button>
+
+          <div className="hidden lg:block ">
             <ul className="flex items-center gap-4">
               <li className="text-white text-base">
                 <Link to="/">Home</Link>
               </li>
               <li className="text-primaryblue-200 text-base">
-                <Link to="/chat">Chat with AI</Link>
+                <Link to="/chat" className="flex items-center gap-2">
+                  Chat <FaRobot className="text-lg" />
+                </Link>
               </li>
               {auth && auth.user ? (
                 <li className="text-white text-base">
@@ -78,82 +90,158 @@ const Navbar = () => {
               ) : null}
             </ul>
           </div>
-          {auth && auth.token ? (
-            <div className="relative flex gap-2 items-center">
-              {demoAllowed ? (
-                <>
-                  {currentAccount === "demo" ? (
-                    <div className="flex items-center gap-2 mr-3">
-                      <span className="font-medium text-base text-primaryblue-200">
-                        Balance
-                      </span>
-                      <span className="font-semibold text-lg text-primaryblue-200">
-                        {`${parseFloat(demoBalance.toFixed(2))} USD`}
-                      </span>
-                    </div>
-                  ) : (
-                    <FundsActions
-                      onDeposit={handleDeposit}
-                      onWithdraw={handleWithdraw}
-                      balance={auth.wallet.balance} // Pass balance for real account
-                    />
-                  )}
-                  <button
-                    className="bg-white py-1 px-2 text-base text-primary rounded"
-                    onClick={handleSwitchAccount}
-                  >
-                    Switch Account
-                  </button>
-                </>
-              ) : (
+        </div>
+        <div className="hidden lg:flex items-center gap-4">
+          {auth && auth.user ? (
+            <div className="flex flex-row gap-2">
+              {auth && auth.currAccType === "demo" ? null : (
                 <FundsActions
-                  onDeposit={handleDeposit}
-                  onWithdraw={handleWithdraw}
-                  balance={auth?.wallet?.balance} // Pass balance for real account
+                  onDeposit={toggleDeposit}
+                  onWithdraw={toggleWithdraw}
                 />
               )}
+              {/* current account must be demo */}
+              <Balance
+                demo={auth.currAccType === "demo" ? true : false}
+                demoBalance={demoBalance}
+                balance={
+                  auth.currAccType === "real" ? auth.wallet.balance : null
+                }
+              />
+
+              <SwitchSelection onSwitch={handleAccountSwith} />
             </div>
           ) : (
-            <div className="flex gap-2 items-center">
-              <button
-                className="bg-white py-1 px-4 text-base text-primary rounded"
-                onClick={navigateLogin}
-              >
-                Login
-              </button>
-              <button
-                className="bg-secondary py-2 px-4 text-base text-white rounded"
-                onClick={navigateSignup}
-              >
-                Sign Up
-              </button>
-            </div>
+            <AuthActions onLogin={navigateLogin} onSignUp={navigateSignup} />
           )}
         </div>
+        <button onClick={toggleMobileNav} className="block lg:hidden">
+          <RiListSettingsFill className="text-2xl text-primaryblue-100" />
+        </button>
       </nav>
-      {show && <SideBar />}
+
+      {showSideBar && <SideBar />}
+      {showMobileNav && (
+        <MobileNav
+          auth={auth}
+          toggleDeposit={toggleDeposit}
+          toggleWithdraw={toggleWithdraw}
+          onSwitch={handleAccountSwith}
+          demoBalance={demoBalance}
+          onLogin={navigateLogin}
+          onSignUp={navigateSignup}
+        />
+      )}
       {showDeposit && <Deposit onClose={() => setShowDeposit(false)} />}
       {showWithdraw && <WithDraw onClose={() => setShowWithdraw(false)} />}
     </>
   );
 };
 
-const FundsActions = ({ onDeposit, onWithdraw, balance }) => (
+const MobileNav = ({
+  auth,
+  toggleDeposit,
+  toggleWithdraw,
+  onSwitch,
+  demoBalance,
+  onLogin,
+  onSignUp,
+}) => (
+  <nav className="bg-primary p-3 flex items-center flex-col px-16">
+    <div>
+      <ul className="py-2 flex flex-col gap-2">
+        <li className="text-white text-base">
+          <Link to="/">Home</Link>
+        </li>
+        <li className="text-primaryblue-200 text-base">
+          <Link to="/chat" className="flex items-center gap-2">
+            Chat <FaRobot className="text-lg" />
+          </Link>
+        </li>
+        {auth && auth.user ? (
+          <li className="text-white text-base">
+            <Link to="markets">Markets</Link>
+          </li>
+        ) : null}
+      </ul>
+    </div>
+    <div>
+      {auth && auth.user ? (
+        <div className="flex flex-row gap-2">
+          {auth && auth.currAccType === "demo" ? null : (
+            <FundsActions
+              onDeposit={toggleDeposit}
+              onWithdraw={toggleWithdraw}
+            />
+          )}
+          {/* current account must be demo */}
+          <Balance
+            demo={auth.currAccType === "demo" ? true : false}
+            demoBalance={demoBalance}
+            balance={auth.currAccType === "real" ? auth.wallet.balance : null}
+          />
+
+          <SwitchSelection onSwitch={onSwitch} />
+        </div>
+      ) : (
+        <AuthActions onLogin={onLogin} onSignUp={onSignUp} />
+      )}
+    </div>
+  </nav>
+);
+
+const Balance = ({ balance, demo, demoBalance }) => (
+  <div>
+    <button className="flex items-center gap-2 px-3 py-1.5 text-base text-primaryblue-50 border border-primaryblue-100 rounded">
+      <span className="font-bold ">
+        {demo
+          ? `Demo: ${parseFloat(demoBalance.toFixed(2))}`
+          : `Trade: ${parseFloat(balance.toFixed(2))}`}
+      </span>
+      <BiSolidDollarCircle className="text-2xl" />
+    </button>
+  </div>
+);
+
+const SwitchSelection = ({ onSwitch }) => (
+  <button
+    className="bg-white p-2 px-3 text-base text-primary rounded flex items-center gap-2 w-min"
+    onClick={onSwitch}
+  >
+    Switch
+  </button>
+);
+
+const FundsActions = ({ onDeposit, onWithdraw }) => (
   <div className="flex items-center gap-3">
-    <span className=" py-1 px-3 text-base text-primaryblue-100 font-bold">{`Balance ${parseFloat(
-      balance.toFixed(2)
-    )} USD`}</span>
     <button
-      className="bg-white py-1 px-3 text-base text-primary rounded"
+      className="bg-white p-2 text-base text-primary rounded flex items-center gap-2"
       onClick={onDeposit}
     >
-      Deposit
+      Deposit <FaArrowDown className="text-primary" />
+    </button>
+    <button
+      className="bg-secondary p-2 text-base text-white rounded flex items-center gap-2"
+      onClick={onWithdraw}
+    >
+      WithDraw <FaArrowUp className="text-white" />
+    </button>
+  </div>
+);
+
+const AuthActions = ({ onLogin, onSignUp }) => (
+  <div className="flex items-center gap-3">
+    <button
+      className="bg-white py-1 px-3 text-base text-primary rounded"
+      onClick={onLogin}
+    >
+      Login
     </button>
     <button
       className="bg-secondary py-1 px-3 text-base text-white rounded"
-      onClick={onWithdraw}
+      onClick={onSignUp}
     >
-      Withdraw
+      Signup
     </button>
   </div>
 );

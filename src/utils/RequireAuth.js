@@ -12,7 +12,7 @@ const RequireAuth = () => {
     </span>; // Or return a loading spinner
   }
 
-  return auth?.token ? (
+  return auth?.user ? (
     <Outlet />
   ) : (
     <Navigate to="/auth" state={{ from: location.pathname }} />

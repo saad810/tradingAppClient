@@ -61,7 +61,7 @@ const useTrade = (symbol, candlestickData) => {
         tradeClosePrice: buyOutPrice,
         profitVal: profitLoss,
         stake: stake,
-        tradeType: "demo",
+        tradeType: "real",
         multiplier: selectedMultiplier,
         tradeWinNum: calculateWinNum(profitLoss, selectedMultiplier, stake),
         tradeUserId: auth.user.id,
