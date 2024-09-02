@@ -28,7 +28,18 @@ root.render(
               <Route path="/*" element={<App />} />
             </Routes>
           </BrowserRouter>
-          <ToastContainer />
+          <ToastContainer
+            position="top-right"
+            autoClose={5000}
+            hideProgressBar
+            newestOnTop={false}
+            closeOnClick
+            rtl={false}
+            pauseOnFocusLoss={false}
+            draggable
+            pauseOnHover={false}
+            theme="colored"
+          />
         </TradingProvider>
       </AuthProvider>
     </Elements>

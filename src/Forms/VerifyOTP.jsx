@@ -25,9 +25,14 @@ const VerifyOTP = () => {
     e.preventDefault();
     const generatedOtp = generateOtp();
 
+    // Log the email to ensure it's the one you expect
+    console.log("Sending OTP to:", email);
+
     const templateParams = {
-      user_email: auth.user.email,
+      user_email: email, // Use the email entered by the user
       message: generatedOtp,
+      from_name: "Syntho Next",
+      to_name: auth.user.name || "User",
     };
 
     try {
@@ -38,13 +43,13 @@ const VerifyOTP = () => {
         "pjzs6nn86Dbi-DcX6"
       );
 
-      console.log("SUCCESS!", emailResponse.status, emailResponse.text);
+      console.log("EmailJS SUCCESS!", emailResponse.status, emailResponse.text);
       setIsOtpSent(true);
 
       try {
         const response = await axios.post(
           "/users/save-otp",
-          JSON.stringify({ email: auth.user.email, otp: generatedOtp }),
+          JSON.stringify({ email, otp: generatedOtp }), // Use the user-entered email here
           {
             headers: {
               "Content-Type": "application/json",
@@ -58,17 +63,66 @@ const VerifyOTP = () => {
         });
       } catch (error) {
         console.error("Error during OTP verification:", error);
-        toast.error("Failed to verify OTP ", {
+        toast.error("Failed to save OTP", {
           autoClose: 2000,
         });
       }
     } catch (error) {
-      console.log("FAILED...", error.text);
+      console.log("EmailJS FAILED...", error.text);
       toast.error("Failed to send OTP", {
         autoClose: 2000,
       });
     }
   };
+
+  // const sendEmail = async (e) => {
+  //   e.preventDefault();
+  //   const generatedOtp = generateOtp();
+
+  //   const templateParams = {
+  //     user_email: email,
+  //     message: generatedOtp,
+  //   };
+
+  //   try {
+  //     const emailResponse = await emailjs.send(
+  //       "service_vhq02r9",
+  //       "template_aob5t88",
+  //       templateParams,
+  //       "pjzs6nn86Dbi-DcX6"
+  //     );
+
+  //     console.log("SUCCESS!", emailResponse.status, emailResponse.text);
+  //     setIsOtpSent(true);
+
+  //     try {
+  //       const response = await axios.post(
+  //         "/users/save-otp",
+  //         JSON.stringify({ email: auth.user.email, otp: generatedOtp }),
+  //         {
+  //           headers: {
+  //             "Content-Type": "application/json",
+  //           },
+  //         }
+  //       );
+
+  //       console.log(response.data);
+  //       toast.success("OTP sent and saved successfully", {
+  //         autoClose: 2000,
+  //       });
+  //     } catch (error) {
+  //       console.error("Error during OTP verification:", error);
+  //       toast.error("Failed to verify OTP ", {
+  //         autoClose: 2000,
+  //       });
+  //     }
+  //   } catch (error) {
+  //     console.log("FAILED...", error.text);
+  //     toast.error("Failed to send OTP", {
+  //       autoClose: 2000,
+  //     });
+  //   }
+  // };
 
   const handleVerifyOtp = async (e) => {
     e.preventDefault();
