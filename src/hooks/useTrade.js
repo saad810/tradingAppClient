@@ -91,9 +91,14 @@ const useTrade = (symbol, candlestickData) => {
 
   const handleWalletUpdate = async (updatedBalance) => {
     try {
-      const response = await axios.put("/users/update-wallet", {
-        balance: updatedBalance,
-      });
+      const data = {
+        userId: auth.user.id,
+        amount: updatedBalance,
+        type: "trade",
+      };
+      console.log("Data", data);
+
+      const response = await axios.post("/users/update-wallet", data);
       console.log("Wallet Updated", response.data);
     } catch (error) {
       console.log("Error updating wallet", error);
@@ -142,6 +147,7 @@ const useTrade = (symbol, candlestickData) => {
       console.log("Win Amount", winAmount);
       console.log("trade before [[function]]", userTrade);
       await handleCreateTrade(); // Log the trade
+      await handleWalletUpdate(updatedBalance); // Update the wallet
     } else {
       toast.error("Buy in before attempting to buy out");
     }
