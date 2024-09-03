@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import ReactMarkdown from "react-markdown";
 import { AiOutlineLoading3Quarters } from "react-icons/ai";
+import { BASE_URL } from "../api/axios";
 const ChatBot = () => {
   const [err, setErr] = useState("");
   const [value, setValue] = useState("");
@@ -24,7 +25,7 @@ const ChatBot = () => {
         message: value,
         chatHistory,
       };
-      const response = await fetch("http://localhost:3500/gemini", {
+      const response = await fetch(`${BASE_URL}/gemini`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
