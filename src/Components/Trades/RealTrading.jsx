@@ -20,8 +20,8 @@ const RealTrading = () => {
   } = useTrade(symbol, candlestickData);
 
   const chartRef = useRef(null);
-  const areaChartRef = useRef(null); // Ref for area series chart
-  const histogramChartRef = useRef(null); // Ref for histogram chart
+   const areaChartRef = useRef(null); // Ref for area series chart
+  const histogramChartRef = useRef(null); 
   const [movingAverageData, setMovingAverageData] = useState([]);
   const [bollingerBands, setBollingerBands] = useState({
     upperBandData: [],
@@ -56,16 +56,18 @@ const RealTrading = () => {
         background: { type: "solid", color: "white" },
       },
     });
+
     chart.applyOptions({
       watermark: {
-          visible: true,
-          fontSize: 24,
-          horzAlign: 'center',
-          vertAlign: 'center',
-          color: 'rgba(171, 71, 188, 0.5)',
-          text: 'SYNTHO-NEXT',
+        visible: true,
+        fontSize: 24,
+        horzAlign: "center",
+        vertAlign: "center",
+        color: "rgba(171, 71, 188, 0.5)",
+        text: "SYNTHO-NEXT",
       },
-  });
+    });
+
     const candlestickSeries = chart.addCandlestickSeries({
       upColor: "#26a69a",
       downColor: "#ef5350",
@@ -74,6 +76,21 @@ const RealTrading = () => {
       wickDownColor: "#ef5350",
     });
     candlestickSeries.setData(candlestickData);
+
+    // Add Area Series
+    const areaSeries = chart.addAreaSeries({
+      topColor: "rgba(27, 67, 77, 0.08)", // Area color
+      bottomColor: "rgba(27, 67, 77, 0.2)",
+      lineColor: "rgba(27, 67, 77, 0.1)",
+      lineWidth: 0,
+    });
+
+    // Use closing prices for area series
+    const areaData = candlestickData.map((item) => ({
+      time: item.time,
+      value: item.close, // Assuming close price for area series
+    }));
+    areaSeries.setData(areaData);
 
     // Conditionally render the moving average
     if (selectedIndicators.movingAverage) {
@@ -122,7 +139,6 @@ const RealTrading = () => {
     };
   }, [candlestickData, movingAverageData, bollingerBands, selectedIndicators]);
 
-  // Area series chart setup
   useEffect(() => {
     const areaChart = createChart(areaChartRef.current, {
       layout: {
@@ -163,7 +179,7 @@ const RealTrading = () => {
     });
 
     const histogramSeries = histogramChart.addHistogramSeries({
-      color: "rgba(255, 0, 0, 0.8)", // Histogram color
+      color: "rgba(27, 67, 77, 0.8)", // Histogram color
     });
 
     // Example data for histogram, you can replace it with any relevant data
@@ -182,6 +198,7 @@ const RealTrading = () => {
     const { name, checked } = e.target;
     setSelectedIndicators((prev) => ({ ...prev, [name]: checked }));
   };
+
 
   return (
     <div className="flex flex-row">
@@ -223,18 +240,17 @@ const RealTrading = () => {
           </label>
         </div>
 
-        <div style={{ width: "1100px", height: "350px" }} className="mt-3">
+        <div style={{ width: "1100px", height: "450px" }} className="mt-3">
           <div ref={chartRef} style={{ width: "100%", height: "100%" }}></div>
         </div>
-
-        <div className="flex flex-row mt-4">
-          <div style={{ width: "550px", height: "200px" }}>
+        <div className="flex flex-row mt-2">
+          <div style={{ width: "550px", height: "150px" }}>
             <div
               ref={areaChartRef}
               style={{ width: "100%", height: "100%" }}
             ></div>
           </div>
-          <div style={{ width: "550px", height: "200px" }}>
+          <div style={{ width: "550px", height: "150px" }}>
             <div
               ref={histogramChartRef}
               style={{ width: "100%", height: "100%" }}
@@ -242,8 +258,6 @@ const RealTrading = () => {
           </div>
         </div>
       </div>
-
-      {/* Area and Histogram Charts in One Line */}
 
       <div>
         <RealTradeSideBar
@@ -259,6 +273,7 @@ const RealTrading = () => {
     </div>
   );
 };
+
 // const calculateMACD = (
 //   data,
 //   shortPeriod = 12,
