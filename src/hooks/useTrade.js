@@ -133,26 +133,36 @@ const useTrade = (symbol, candlestickData) => {
   };
 
   const handleBuyOut = async () => {
-    if (buyInPrice !== null && currentPrice !== null) {
-      await buyOut(currentPrice); // Wait for buyOut to finish
-      const winAmount = calculateWinNum(profitLoss, selectedMultiplier, stake);
-      const updatedBalance = auth.wallet.balance + winAmount; // Update balance with the winnings
-      setAuth({
-        ...auth,
-        wallet: {
-          ...auth.wallet,
-          balance: updatedBalance,
-        },
-      });
-      console.log("Win Amount", winAmount);
-      console.log("trade before [[function]]", userTrade);
-      await handleCreateTrade(); // Log the trade
-      await handleWalletUpdate(updatedBalance); // Update the wallet
-    } else {
-      toast.error("Buy in before attempting to buy out");
+    try {
+      if (buyInPrice !== null && currentPrice !== null) {
+        await buyOut(currentPrice); // Wait for buyOut to finish
+  
+        const winAmount = calculateWinNum(profitLoss, selectedMultiplier, stake);
+        const updatedBalance = auth.wallet.balance + winAmount; // Update balance with the winnings
+  
+        // Update the auth state with the new balance
+        setAuth((prevAuth) => ({
+          ...prevAuth,
+          wallet: {
+            ...prevAuth.wallet,
+            balance: updatedBalance,
+          },
+        }));
+  
+        console.log("Win Amount", winAmount);
+        console.log("Trade before [[function]]", userTrade);
+  
+        await handleCreateTrade(); // Log the trade
+        await handleWalletUpdate(updatedBalance); // Update the wallet on the server
+      } else {
+        toast.error("Buy in before attempting to buy out");
+      }
+    } catch (error) {
+      console.error("Error during buyout process:", error);
+      toast.error("An error occurred during the buyout process. Please try again.");
     }
   };
-
+  
   return {
     stake,
     setStake,
