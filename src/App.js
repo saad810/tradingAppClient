@@ -15,6 +15,19 @@ import ProfileScreen from "./Screens/ProfileScreen";
 import ChatBot from "./Screens/ChatBot";
 // import Chat from "./Components/Chat";
 const App = () => {
+  // useEffect(() => {
+  //   const savedUser = localStorage.getItem("auth");
+  //   if (savedUser) {
+  //     setUser(JSON.parse(savedUser));
+  //   } else {
+  //     // Optionally, check with the server if the session is still valid
+  //     axios.get("/api/check-auth", { withCredentials: true }).then((response) => {
+  //       setUser(response.data);
+  //     });
+  //   }
+  //   setLoading(false);
+  // }, []);
+  
   return (
     <Routes>
       <Route path="/auth" element={<AuthLayout />}>

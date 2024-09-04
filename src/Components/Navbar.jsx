@@ -9,9 +9,9 @@ import WithDraw from "./Payments/WithDraw";
 import SideBar from "./SideBar";
 import useDemoTrade from "../hooks/useDemoTrade";
 import { RiListSettingsFill } from "react-icons/ri";
-
+import axios from "axios";
 const Navbar = () => {
-  const { auth, setAuth } = useAuth();
+  const { auth, setAuth, login } = useAuth();
   const { demoBalance } = useDemoTrade();
   const navigate = useNavigate();
   const [showSideBar, setShowSideBar] = useState(false);
@@ -47,12 +47,9 @@ const Navbar = () => {
       navigate("/verify");
     }
   };
-  const navigateLogin = () => {
-    navigate("/auth");
-  };
 
-  const navigateSignup = () => {
-    navigate("/auth/signup");
+  const handleLogin = async () => {
+    window.open("http://localhost:3500/auth/google", "_self");
   };
 
   return (
@@ -95,14 +92,14 @@ const Navbar = () => {
                 demo={auth.currAccType === "demo" ? true : false}
                 demoBalance={demoBalance}
                 balance={
-                  auth.currAccType === "real" ? auth.wallet.balance : null
+                  auth.currAccType === "real" ? auth.wallet.balance : "0"
                 }
               />
 
               <SwitchSelection onSwitch={handleAccountSwith} />
             </div>
           ) : (
-            <AuthActions onLogin={navigateLogin} onSignUp={navigateSignup} />
+            <AuthActions onLogin={handleLogin} />
           )}
         </div>
         <button onClick={toggleMobileNav} className="block lg:hidden">
@@ -118,8 +115,7 @@ const Navbar = () => {
           toggleWithdraw={toggleWithdraw}
           onSwitch={handleAccountSwith}
           demoBalance={demoBalance}
-          onLogin={navigateLogin}
-          onSignUp={navigateSignup}
+          onLogin={handleLogin}
         />
       )}
       {showDeposit && <Deposit onClose={() => setShowDeposit(false)} />}
@@ -135,7 +131,6 @@ const MobileNav = ({
   onSwitch,
   demoBalance,
   onLogin,
-  onSignUp,
 }) => (
   <nav className="bg-primary p-3 flex items-center flex-col px-16">
     <div>
@@ -174,7 +169,7 @@ const MobileNav = ({
           <SwitchSelection onSwitch={onSwitch} />
         </div>
       ) : (
-        <AuthActions onLogin={onLogin} onSignUp={onSignUp} />
+        <AuthActions onLogin={onLogin} />
       )}
     </div>
   </nav>
@@ -185,8 +180,8 @@ const Balance = ({ balance, demo, demoBalance }) => (
     <button className="flex items-center gap-2 px-3 py-1.5 text-base text-primaryblue-50 border border-primaryblue-100 rounded">
       <span className="font-bold ">
         {demo
-          ? `Demo: ${parseFloat(demoBalance.toFixed(2))}`
-          : `Trade: ${parseFloat(balance.toFixed(2))}`}
+          ? `Demo: ${balance }`
+          : `Trade: ${balance }`}
       </span>
       <BiSolidDollarCircle className="text-2xl" />
     </button>
@@ -219,19 +214,13 @@ const FundsActions = ({ onDeposit, onWithdraw }) => (
   </div>
 );
 
-const AuthActions = ({ onLogin, onSignUp }) => (
+const AuthActions = ({ onLogin }) => (
   <div className="flex items-center gap-3">
     <button
       className="bg-white py-1 px-3 text-base text-primary rounded"
       onClick={onLogin}
     >
       Login
-    </button>
-    <button
-      className="bg-secondary py-1 px-3 text-base text-white rounded"
-      onClick={onSignUp}
-    >
-      Signup
     </button>
   </div>
 );

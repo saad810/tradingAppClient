@@ -43,6 +43,7 @@ const HomeHero = ({
     };
     return new Intl.DateTimeFormat("en-US", options).format(date);
   };
+  const timezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
 
   return (
     <>
@@ -82,13 +83,13 @@ const HomeHero = ({
             <div className="flex flex-col flex-grow">
               <span className="text-sm text-gray-400">Time Zone</span>
               <span className="text-base font-semibold text-primary">
-                {auth.user.timezone}
+                {timezone}
               </span>
             </div>
             <div className="flex flex-col flex-grow">
               <span className="text-sm text-gray-400">Last Login</span>
               <span className="text-base font-semibold text-primary">
-                {formatTimeStamp(userData.lastLogin)}
+                {userData.lastLogin ? formatTimeStamp(userData.lastLogin) : ""}
               </span>
             </div>
 

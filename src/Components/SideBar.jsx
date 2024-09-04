@@ -5,18 +5,13 @@ import useLogout from "../hooks/useLogout";
 import useAuth from "../hooks/useAuth";
 import avatar from "./gorilla.png";
 const SideBar = () => {
-  const { auth } = useAuth();
+  const { auth, logout } = useAuth();
   const navigate = useNavigate();
-  const logout = useLogout();
 
   const navigateLogin = () => {
     navigate("/auth");
   };
 
-  const handleLogout = () => {
-    logout();
-    navigate("/");
-  };
 
   return (
     <div className="w-72 bg-bgOne p-6 z-10 fixed left-0 top-14 h-screen">
@@ -61,7 +56,7 @@ const SideBar = () => {
 
               <li
                 className="flex items-center space-x-2 cursor-pointer"
-                onClick={handleLogout}
+                onClick={logout}
               >
                 <span className="text-2xl">
                   <FaSignOutAlt />

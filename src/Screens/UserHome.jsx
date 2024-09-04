@@ -28,7 +28,7 @@ const UserHome = () => {
   };
 
   return (
-    <div>{auth && auth.token ? <Authenticated /> : <NotAuthenticated />}</div>
+    <div>{auth && auth.user ? <Authenticated /> : <NotAuthenticated />}</div>
   );
 };
 
