@@ -27,7 +27,7 @@ const AuthProvider = ({ children }) => {
   }, []);
 
   const logout = () => {
-    axios.get("/api/logout", { withCredentials: true }).then(() => {
+    axios.get("/auth/logout", { withCredentials: true }).then(() => {
       setAuth(null);
     });
   };
