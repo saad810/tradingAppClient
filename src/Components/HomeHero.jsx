@@ -51,9 +51,17 @@ const HomeHero = ({
         <div className="py-10 shadow rounded-md bg-primaryblue-50 px-5 mt-8">
           <div className="flex flex-col md:flex-row md:items-start items-center justify-between">
             <div className="pb-4 flex items-center gap-4">
-              <span className="font-bold bg-primary text-lg text-white p-3 rounded-full">
-                {GetLetters(name)}
-              </span>
+              {userData.avatar ? (
+                <img
+                  src={userData.avatar}
+                  alt="User Avatar"
+                  className="w-10 h-10 rounded-full"
+                />
+              ) : (
+                <div className="w-24 h-24 bg-primaryblue-200 rounded-full flex items-center justify-center text-white text-2xl font-semibold">
+                  {GetLetters(name)}
+                </div>
+              )}
               <h3 className="text-2xl font-semibold">{userData.email}</h3>
             </div>
           </div>

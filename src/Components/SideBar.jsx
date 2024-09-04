@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { FaUser, FaSearch, FaSignOutAlt } from "react-icons/fa";
 import { Link, useNavigate } from "react-router-dom";
 import useLogout from "../hooks/useLogout";
@@ -11,6 +11,9 @@ const SideBar = () => {
   const navigateLogin = () => {
     navigate("/auth");
   };
+  useEffect(() => {
+   console.log(auth);
+  }, [auth]);
 
 
   return (
@@ -20,7 +23,7 @@ const SideBar = () => {
           <>
             <div className="flex flex-col items-start mb-6">
               <img
-                src={avatar}
+                src={auth.user.avatar || avatar}
                 alt="User Avatar"
                 className="w-24 h-24 mb-4"
               />
@@ -61,9 +64,9 @@ const SideBar = () => {
                 <span className="text-2xl">
                   <FaSignOutAlt />
                 </span>
-                <a href="#" className="text-lg font-medium">
+                <span className="text-lg font-medium">
                   Log Out
-                </a>
+                </span>
               </li>
               <hr className="border-gray-400" />
             </ul>

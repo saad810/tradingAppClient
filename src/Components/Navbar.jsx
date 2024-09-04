@@ -9,9 +9,8 @@ import WithDraw from "./Payments/WithDraw";
 import SideBar from "./SideBar";
 import useDemoTrade from "../hooks/useDemoTrade";
 import { RiListSettingsFill } from "react-icons/ri";
-import axios from "axios";
 const Navbar = () => {
-  const { auth, setAuth, login } = useAuth();
+  const { auth, setAuth } = useAuth();
   const { demoBalance } = useDemoTrade();
   const navigate = useNavigate();
   const [showSideBar, setShowSideBar] = useState(false);
@@ -49,7 +48,7 @@ const Navbar = () => {
   };
 
   const handleLogin = async () => {
-    window.open("http://localhost:3500/auth/google", "_self");
+    navigate('/auth')
   };
 
   return (

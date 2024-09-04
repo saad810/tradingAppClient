@@ -86,6 +86,7 @@ const ProfileUpdate = ({ onClose }) => {
             type="email"
             id="email"
             value={email}
+            disabled={auth.user.isGoogle || false}
             onChange={handleEmailChange}
             className="w-full mt-1 p-2 rounded bg-bgOne border border-gray-300"
             placeholder="Enter your email"
