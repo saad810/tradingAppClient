@@ -3,20 +3,14 @@ import HomeHero from "../Components/HomeHero";
 import MarketsHome from "../Components/MarketsHome";
 import useAuth from "../hooks/useAuth";
 import MainLandingPage from "../LandingPage/MainLandingPage";
+import DemoTrading from "../Components/Trades/DemoTrading";
+import RealTrading from "../Components/Trades/RealTrading";
 
 const UserHome = () => {
   const { auth } = useAuth(); // Assuming auth contains the entire object
 
   const Authenticated = () => (
-    <div>
-      <div className="border-b">
-        <HomeHero isProfile={false} />
-      </div>
-      <div className="">
-        <MarketsHome />
-        {/* <div className="border-2 border-green-900 w-80 h-screen"></div> */}
-      </div>
-    </div>
+    <div>{auth.currAccType === "demo" ? <DemoTrading /> : <RealTrading />}</div>
   );
 
   const NotAuthenticated = () => {

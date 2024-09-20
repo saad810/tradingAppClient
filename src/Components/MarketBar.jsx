@@ -16,7 +16,7 @@ const MarketBar = ({ market }) => {
       <td className="py-2">
         <div className="flex flex-col">
           <span className="text-lg font-semibold text-primaryblue-700">
-            {market.displayName}
+            {market.display_name}
           </span>
           <span className="text-sm font-bold text-gray-400">
             {market.symbol}
@@ -24,14 +24,19 @@ const MarketBar = ({ market }) => {
         </div>
       </td>
       <td className="py-2">
-        <span>{market.marketTitle}</span>
+        <span>{market.market_display_name}</span>
       </td>
       <td className="py-2">
-        {market.submarketTitle !== null ? (
-          <span>{market.submarketTitle}</span>
-        ) : (
-          <span>No SubMarket</span>
-        )}
+        <div className="flex flex-col">
+          <span>
+            {market.subgroup_display_name === "None"
+              ? null
+              : market.subgroup_display_name}
+          </span>
+          <span className="text-sm font-bold">
+            {market.submarket_display_name}
+          </span>
+        </div>
       </td>
       <td className="py-2">
         {closePrice !== null ? (

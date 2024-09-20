@@ -56,7 +56,7 @@ const AuthProvider = ({ children }) => {
   return (
     <AuthContext.Provider
       value={{
-        auth,
+        auth: auth ?? null, // Handle undefined, setting it to null
         setAuth,
         currentAccount,
         setCurrentAccount,

@@ -13,6 +13,9 @@ import TradingHistory from "./Screens/TradingHistory";
 import VerifyOTP from "./Forms/VerifyOTP";
 import ProfileScreen from "./Screens/ProfileScreen";
 import ChatBot from "./Screens/ChatBot";
+import DemoTrading from "./Components/Trades/DemoTrading";
+import RealTrading from "./Components/Trades/RealTrading";
+import AboutScreen from "./Screens/AboutScreen";
 // import Chat from "./Components/Chat";
 const App = () => {
   // useEffect(() => {
@@ -38,13 +41,17 @@ const App = () => {
       <Route path="/terms" element={<h1>Terms</h1>} />
       <Route path="/" element={<GlobalLayout />}>
         <Route path="" element={<UserHome />} />
+        <Route path="about" element={<AboutScreen />} />
         <Route path="chat" element={<ChatBot />} />
         <Route element={<RequireAuth />}>
           <Route path="profile" element={<ProfileScreen />} />
           <Route path="verify" element={<VerifyOTP />} />
-          <Route path="markets" element={<MarketsScreen />} />
-          <Route path="markets/:symbol" element={<TradingChartsScreen />} />
+          {/* <Route path="markets" element={<MarketsScreen />} /> */}
+          <Route path="demo-trading" element={<DemoTrading />} />
+          <Route path="real-trading" element={<RealTrading />} />
+          {/* <Route path="markets/:symbol" element={<TradingChartsScreen />} /> */}
           <Route path="history" element={<TradingHistory />} />
+
         </Route>
       </Route>
       <Route path="*" element={<div>404</div>} />

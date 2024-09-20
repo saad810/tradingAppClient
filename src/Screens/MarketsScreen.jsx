@@ -13,7 +13,7 @@ const MarketsScreen = () => {
   useEffect(() => {
     // Filter the displayed data based on the search query
     const filtered = markets.filter((market) =>
-      market.displayName.toLowerCase().includes(searchQuery.toLowerCase())
+      market.display_name.toLowerCase().includes(searchQuery.toLowerCase())
     );
     setDisplayedData(filtered);
   }, [searchQuery]);

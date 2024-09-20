@@ -12,9 +12,8 @@ const SideBar = () => {
     navigate("/auth");
   };
   useEffect(() => {
-   console.log(auth);
+    console.log(auth);
   }, [auth]);
-
 
   return (
     <div className="w-72 bg-bgOne p-6 z-10 fixed left-0 top-14 h-screen">
@@ -64,18 +63,28 @@ const SideBar = () => {
                 <span className="text-2xl">
                   <FaSignOutAlt />
                 </span>
-                <span className="text-lg font-medium">
-                  Log Out
-                </span>
+                <span className="text-lg font-medium">Log Out</span>
               </li>
               <hr className="border-gray-400" />
             </ul>
           </>
         ) : (
           <div className="flex flex-col items-start mb-6">
-            <h3 className="text-lg font-semibolf text-primary">
-              Log In to continue
-            </h3>
+            <li className="flex flex-col gap-3">
+              <Link to="/" className="text-lg font-medium">
+                Home
+              </Link>
+              <Link to="/about" className="text-lg font-medium">
+                About
+              </Link>
+              <Link to="/#faqs" className="text-lg font-medium">
+                FAQs
+              </Link>
+              <Link to="/chat" className="text-lg font-medium">
+                Customer support
+              </Link>
+            </li>
+            
             <button
               className="px-4 py-2 bg-primary text-white font-medium rounded mt-4"
               onClick={navigateLogin}

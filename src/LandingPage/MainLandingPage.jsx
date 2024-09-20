@@ -1,15 +1,25 @@
-import React from "react";
+import React,{useEffect} from "react";
 import hero from "./assets/8asdas52 1 (1).png";
 import bgImage from "./assets/candlesticks-bg.png";
 import fontBrand from "./assets/Group.png";
 import { useNavigate } from "react-router-dom";
 import FAQSection from "../Components/LandingPage/FAQSection";
 import AboutUs from "../Components/LandingPage/AboutUs";
+import { useLocation } from "react-router-dom";
 const MainLandingPage = () => {
   const navigate = useNavigate();
+  const location = useLocation();
   const navigateLogin = () => {
     navigate("/auth/signup");
   };
+  useEffect(() => {
+    if (location.hash === "#faqs") {
+      const element = document.getElementById("faqs");
+      if (element) {
+        element.scrollIntoView({ behavior: "smooth" });
+      }
+    }
+  }, [location]);
   return (
     <div>
       <div
@@ -48,10 +58,10 @@ const MainLandingPage = () => {
         </div>
       </div>
 
-      <div>
+      <div >
         <AboutUs />
       </div>
-      <div>
+      <div id="faqs" >
         <FAQSection />
       </div>
     </div>
