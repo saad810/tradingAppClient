@@ -3,6 +3,7 @@ import useLocalStorage from "../hooks/useLocalStorage";
 import axios from "../api/axios";
 import { toast } from "react-toastify";
 // import { useNavigate } from "react-router-dom";
+
 export const AuthContext = createContext();
 
 const AuthProvider = ({ children }) => {
@@ -17,13 +18,22 @@ const AuthProvider = ({ children }) => {
         const response = await axios.get("/auth/login/success", {
           withCredentials: true,
         });
-        if (response.data.success) {
+        
+        // Check if the response contains user data
+        if (response.data && response.data.success && response.data.user) {
           console.log(response.data.user);
           setAuth(response.data.user); // Update with user data
         } else {
-          setAuth(null); // Set to null if not authenticated
+          // Check local storage if the response does not contain user data
+          const storedAuth = localStorage.getItem("auth");
+          if (storedAuth) {
+            setAuth(JSON.parse(storedAuth)); // Set auth from local storage if available
+          } else {
+            setAuth(null); // Set to null if local storage is also empty
+          }
         }
       } catch (error) {
+        console.error("Error checking authentication:", error);
         setAuth(null); // Handle error by setting auth to null
       } finally {
         setLoading(false);
@@ -40,7 +50,7 @@ const AuthProvider = ({ children }) => {
       });
       console.log(response.data);
       if (response.data.success) {
-        setAuth(""); // Clear auth state
+        setAuth(null); // Clear auth state
         toast.success("Logged out successfully", { autoClose: 2000 });
         window.location.href = "http://localhost:3000/auth";
         // Redirect to login or another appropriate page

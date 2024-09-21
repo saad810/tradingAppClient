@@ -66,6 +66,18 @@ const SideBar = () => {
                 <span className="text-lg font-medium">Log Out</span>
               </li>
               <hr className="border-gray-400" />
+              <li className="flex flex-col gap-3">
+                <Link to="/" className="text-lg font-medium">
+                  Home
+                </Link>
+
+                <Link to="/chat" className="text-lg font-medium">
+                  Customer support
+                </Link>
+                <Link to="/customer-support" className="text-lg font-medium">
+                  Support
+                </Link>
+              </li>
             </ul>
           </>
         ) : (
@@ -83,8 +95,11 @@ const SideBar = () => {
               <Link to="/chat" className="text-lg font-medium">
                 Customer support
               </Link>
+              <Link to="/customer-support" className="text-lg font-medium">
+                Support
+              </Link>
             </li>
-            
+
             <button
               className="px-4 py-2 bg-primary text-white font-medium rounded mt-4"
               onClick={navigateLogin}

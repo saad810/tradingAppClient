@@ -31,6 +31,7 @@ const Login = () => {
         },
         withCredentials: true, // This should be part of the same configuration object
       });
+      console.log(response);
 
       // console.log(response.data);
       const updatedAuth = {
@@ -39,11 +40,12 @@ const Login = () => {
       };
       console.log("update auth", updatedAuth);
       setAuth(updatedAuth);
+      localStorage.setItem("auth", JSON.stringify(updatedAuth));
       toast.success("Login Successful", {
         autoClose: 2000,
       });
 
-      navigate("/");
+      navigate("/demo-trading");
     } catch (error) {
       console.log(error);
       toast.error("Login Failed", {

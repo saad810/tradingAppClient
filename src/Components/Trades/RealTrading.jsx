@@ -1,433 +1,103 @@
-// import React, { useEffect, useRef, useState } from "react";
-// import { useParams } from "react-router-dom";
-// import { createChart } from "lightweight-charts";
-// import useCandlestickData from "../../hooks/useCandlestickData";
-// import useTrade from "../../hooks/useTrade";
-// import RealTradeSideBar from "../TradingSideBar/RealTradeSideBar";
-// import { toast } from "react-toastify";
-
-// const RealTrading = () => {
-//   const { symbol } = useParams();
-//   const { candlestickData } = useCandlestickData(symbol, 5);
-//   const {
-//     stake,
-//     setStake,
-//     selectedMultiplier,
-//     setSelectedMultiplier,
-//     currentPrice,
-//     handleBuyIn,
-//     handleBuyOut,
-//   } = useTrade(symbol, candlestickData);
-
-//   const chartRef = useRef(null);
-//    const areaChartRef = useRef(null); // Ref for area series chart
-//   const histogramChartRef = useRef(null);
-//   const [movingAverageData, setMovingAverageData] = useState([]);
-//   const [bollingerBands, setBollingerBands] = useState({
-//     upperBandData: [],
-//     lowerBandData: [],
-//   });
-//   const [selectedIndicators, setSelectedIndicators] = useState({
-//     movingAverage: false,
-//     bollingerBands: false,
-//     parabolicSAR: false,
-//   });
-
-//   useEffect(() => {
-//     toast.info("Real trading YAY");
-//   }, []);
-
-//   useEffect(() => {
-//     if (candlestickData.length > 0) {
-//       const maData = calculateMovingAverage(candlestickData, 10); // 10-period MA
-//       const { upperBandData, lowerBandData } =
-//         calculateBollingerBands(candlestickData);
-
-//       setMovingAverageData(maData);
-//       setBollingerBands({ upperBandData, lowerBandData });
-//     }
-//   }, [candlestickData]);
-
-//   // Main chart setup
-//   useEffect(() => {
-//     const chart = createChart(chartRef.current, {
-//       layout: {
-//         textColor: "black",
-//         background: { type: "solid", color: "white" },
-//       },
-//     });
-
-//     chart.applyOptions({
-//       watermark: {
-//         visible: true,
-//         fontSize: 24,
-//         horzAlign: "center",
-//         vertAlign: "center",
-//         color: "rgba(171, 71, 188, 0.5)",
-//         text: "SYNTHO-NEXT",
-//       },
-//     });
-
-//     const candlestickSeries = chart.addCandlestickSeries({
-//       upColor: "#26a69a",
-//       downColor: "#ef5350",
-//       borderVisible: false,
-//       wickUpColor: "#26a69a",
-//       wickDownColor: "#ef5350",
-//     });
-//     candlestickSeries.setData(candlestickData);
-
-//     // Add Area Series
-//     const areaSeries = chart.addAreaSeries({
-//       topColor: "rgba(27, 67, 77, 0.08)", // Area color
-//       bottomColor: "rgba(27, 67, 77, 0.2)",
-//       lineColor: "rgba(27, 67, 77, 0.1)",
-//       lineWidth: 0,
-//     });
-
-//     // Use closing prices for area series
-//     const areaData = candlestickData.map((item) => ({
-//       time: item.time,
-//       value: item.close, // Assuming close price for area series
-//     }));
-//     areaSeries.setData(areaData);
-
-//     // Conditionally render the moving average
-//     if (selectedIndicators.movingAverage) {
-//       const movingAverageSeries = chart.addLineSeries({
-//         color: "blue",
-//         lineWidth: 2,
-//       });
-//       movingAverageSeries.setData(movingAverageData);
-//     }
-
-//     // Conditionally render Bollinger Bands
-//     if (selectedIndicators.bollingerBands) {
-//       const upperBandSeries = chart.addLineSeries({
-//         color: "green",
-//         lineWidth: 1,
-//       });
-//       upperBandSeries.setData(bollingerBands.upperBandData);
-
-//       const lowerBandSeries = chart.addLineSeries({
-//         color: "red",
-//         lineWidth: 1,
-//       });
-//       lowerBandSeries.setData(bollingerBands.lowerBandData);
-//     }
-
-//     // Parabolic SAR Calculation and Rendering
-//     if (selectedIndicators.parabolicSAR) {
-//       const parabolicSARData = calculateParabolicSAR(candlestickData);
-//       const bullishSARSeries = chart.addLineSeries({
-//         color: "green", // Bullish SAR
-//         lineWidth: 2,
-//       });
-//       bullishSARSeries.setData(parabolicSARData.bullishPoints);
-
-//       const bearishSARSeries = chart.addLineSeries({
-//         color: "red", // Bearish SAR
-//         lineWidth: 2,
-//       });
-//       bearishSARSeries.setData(parabolicSARData.bearishPoints);
-//     }
-
-//     chart.timeScale().fitContent();
-
-//     return () => {
-//       chart.remove();
-//     };
-//   }, [candlestickData, movingAverageData, bollingerBands, selectedIndicators]);
-
-//   useEffect(() => {
-//     const areaChart = createChart(areaChartRef.current, {
-//       layout: {
-//         textColor: "black",
-//         background: { type: "solid", color: "white" },
-//       },
-//       width: areaChartRef.current.clientWidth,
-//       height: areaChartRef.current.clientHeight,
-//     });
-
-//     const areaSeries = areaChart.addAreaSeries({
-//       topColor: "rgba(76, 175, 80, 0.5)", // Area color
-//       bottomColor: "rgba(76, 175, 80, 0.1)",
-//       lineColor: "rgba(76, 175, 80, 1)",
-//     });
-
-//     // Use currentPrice or any relevant data for area series
-//     const areaData = candlestickData.map((item) => ({
-//       time: item.time,
-//       value: item.close, // Assuming close price for area series
-//     }));
-//     areaSeries.setData(areaData);
-
-//     return () => {
-//       areaChart.remove();
-//     };
-//   }, [candlestickData]);
-
-//   // Histogram chart setup
-//   useEffect(() => {
-//     const histogramChart = createChart(histogramChartRef.current, {
-//       layout: {
-//         textColor: "black",
-//         background: { type: "solid", color: "white" },
-//       },
-//       width: histogramChartRef.current.clientWidth,
-//       height: histogramChartRef.current.clientHeight,
-//     });
-
-//     const histogramSeries = histogramChart.addHistogramSeries({
-//       color: "rgba(27, 67, 77, 0.8)", // Histogram color
-//     });
-
-//     // Example data for histogram, you can replace it with any relevant data
-//     const histogramData = candlestickData.map((item) => ({
-//       time: item.time,
-//       value: item.close - item.open, // Example calculation
-//     }));
-//     histogramSeries.setData(histogramData);
-
-//     return () => {
-//       histogramChart.remove();
-//     };
-//   }, [candlestickData]);
-
-//   const handleIndicatorChange = (e) => {
-//     const { name, checked } = e.target;
-//     setSelectedIndicators((prev) => ({ ...prev, [name]: checked }));
-//   };
-
-//   return (
-//     <div className="flex flex-row">
-//       <div className="flex flex-col">
-//         {/* Main Chart */}
-//         <div>
-//           <label className="mb-4 font-semibold text-blue-800">
-//             <input
-//               type="checkbox"
-//               name="movingAverage"
-//               checked={selectedIndicators.movingAverage}
-//               onChange={handleIndicatorChange}
-//               className="checked:bg-blue-600 checked:border-transparent"
-//               disabled={!candlestickData.length}
-//             />
-//             Moving Average
-//           </label>
-//           <label className="ml-4 text-red-800 font-semibold">
-//             <input
-//               type="checkbox"
-//               name="bollingerBands"
-//               checked={selectedIndicators.bollingerBands}
-//               onChange={handleIndicatorChange}
-//               className="checked:bg-red-600 checked:border-transparent"
-//               disabled={!candlestickData.length}
-//             />
-//             Bollinger Bands
-//           </label>
-//           <label className="ml-4 font-semibold text-orange-800">
-//             <input
-//               type="checkbox"
-//               name="parabolicSAR"
-//               checked={selectedIndicators.parabolicSAR}
-//               onChange={handleIndicatorChange}
-//               className="checked:bg-orange-600 checked:border-transparent"
-//               disabled={!candlestickData.length}
-//             />
-//             Parabolic SAR
-//           </label>
-//         </div>
-
-//         <div style={{ width: "1100px", height: "450px" }} className="mt-3">
-//           <div ref={chartRef} style={{ width: "100%", height: "100%" }}></div>
-//         </div>
-//         <div className="flex flex-row mt-2">
-//           <div style={{ width: "550px", height: "150px" }}>
-//             <div
-//               ref={areaChartRef}
-//               style={{ width: "100%", height: "100%" }}
-//             ></div>
-//           </div>
-//           <div style={{ width: "550px", height: "150px" }}>
-//             <div
-//               ref={histogramChartRef}
-//               style={{ width: "100%", height: "100%" }}
-//             ></div>
-//           </div>
-//         </div>
-//       </div>
-
-//       <div>
-//         <RealTradeSideBar
-//           stake={stake}
-//           setStake={setStake}
-//           selectedMultiplier={selectedMultiplier}
-//           setSelectedMultiplier={setSelectedMultiplier}
-//           currentPrice={currentPrice}
-//           handleBuyIn={handleBuyIn}
-//           handleBuyOut={handleBuyOut}
-//         />
-//       </div>
-//     </div>
-//   );
-// };
-
-// // const calculateMACD = (
-// //   data,
-// //   shortPeriod = 12,
-// //   longPeriod = 26,
-// //   signalPeriod = 9
-// // ) => {
-// //   const emaShort = calculateEMA(data, shortPeriod);
-// //   const emaLong = calculateEMA(data, longPeriod);
-// //   const macd = [];
-// //   const signal = calculateEMA(
-// //     emaShort.map((item) => item.value),
-// //     signalPeriod
-// //   );
-
-// //   for (let i = 0; i < emaShort.length; i++) {
-// //     macd.push({
-// //       time: emaShort[i].time,
-// //       value: emaShort[i].value - emaLong[i].value,
-// //     });
-// //   }
-
-// //   return { macd, signal };
-// // };
-
-// // // EMA calculation function
-// // const calculateEMA = (data, period) => {
-// //   const k = 2 / (period + 1);
-// //   const ema = [];
-// //   let prevEma = data[0].close; // Initial EMA value
-
-// //   for (let i = 0; i < data.length; i++) {
-// //     if (i === 0) {
-// //       ema.push({ time: data[i].time, value: prevEma });
-// //     } else {
-// //       prevEma = (data[i].close - prevEma) * k + prevEma;
-// //       ema.push({ time: data[i].time, value: prevEma });
-// //     }
-// //   }
-
-// //   return ema;
-// // };
-
-// // Parabolic SAR calculation function
-// const calculateParabolicSAR = (
-//   data,
-//   accelerationFactor = 0.02,
-//   maxAF = 0.2
-// ) => {
-//   const sarData = {
-//     bullishPoints: [],
-//     bearishPoints: [],
-//   };
-//   let af = accelerationFactor; // Acceleration factor
-//   let ep = data[0].high; // Extreme point
-//   let sar = data[0].low; // Initial SAR
-//   let long = true; // Start with a bullish trend
-//   let prevSAR = sar;
-
-//   for (let i = 1; i < data.length; i++) {
-//     if (long) {
-//       sar = prevSAR + af * (ep - prevSAR);
-//       if (data[i].low < sar) {
-//         long = false;
-//         sar = ep; // Switch to bearish
-//         ep = data[i].low; // Reset extreme point
-//         af = accelerationFactor; // Reset acceleration factor
-//       } else {
-//         sarData.bullishPoints.push({ time: data[i].time, value: sar });
-//         if (data[i].high > ep) {
-//           ep = data[i].high; // Update extreme point
-//           af = Math.min(af + accelerationFactor, maxAF); // Increase acceleration factor
-//         }
-//       }
-//     } else {
-//       sar = prevSAR + af * (ep - prevSAR);
-//       if (data[i].high > sar) {
-//         long = true;
-//         sar = ep; // Switch to bullish
-//         ep = data[i].high; // Reset extreme point
-//         af = accelerationFactor; // Reset acceleration factor
-//       } else {
-//         sarData.bearishPoints.push({ time: data[i].time, value: sar });
-//         if (data[i].low < ep) {
-//           ep = data[i].low; // Update extreme point
-//           af = Math.min(af + accelerationFactor, maxAF); // Increase acceleration factor
-//         }
-//       }
-//     }
-//     prevSAR = sar; // Update previous SAR
-//   }
-
-//   return sarData;
-// };
-
-// // Bollinger Bands calculation function
-// const calculateBollingerBands = (data, period = 20, multiplier = 2) => {
-//   const upperBandData = [];
-//   const lowerBandData = [];
-//   const maData = calculateMovingAverage(data, period);
-
-//   for (let i = 0; i < maData.length; i++) {
-//     const stdDev = calculateStandardDeviation(
-//       data.slice(i, i + period),
-//       maData[i].value
-//     );
-//     upperBandData.push({
-//       time: maData[i].time,
-//       value: maData[i].value + multiplier * stdDev,
-//     });
-//     lowerBandData.push({
-//       time: maData[i].time,
-//       value: maData[i].value - multiplier * stdDev,
-//     });
-//   }
-
-//   return { upperBandData, lowerBandData };
-// };
-
-// // Standard deviation calculation
-// const calculateStandardDeviation = (data, mean) => {
-//   const variance =
-//     data.reduce((sum, item) => sum + Math.pow(item.close - mean, 2), 0) /
-//     data.length;
-//   return Math.sqrt(variance);
-// };
-
-// // Moving Average calculation function
-// const calculateMovingAverage = (data, period) => {
-//   const movingAverages = [];
-
-//   for (let i = 0; i < data.length; i++) {
-//     if (i >= period - 1) {
-//       const sum = data
-//         .slice(i - period + 1, i + 1)
-//         .reduce((acc, curr) => acc + curr.close, 0);
-//       const average = sum / period;
-//       movingAverages.push({ time: data[i].time, value: average });
-//     }
-//   }
-
-//   return movingAverages;
-// };
-// export default RealTrading;
-import React from "react";
+import React, { useEffect, useRef, memo } from "react";
+import RealTradeSideBar from "../TradingSideBar/RealTradeSideBar";
 
 const RealTrading = () => {
+  const container = useRef();
+
+  useEffect(() => {
+    // Check if the script already exists to avoid adding it again
+    if (!document.getElementById("tradingview-widget-script")) {
+      const script = document.createElement("script");
+      script.src =
+        "https://s3.tradingview.com/external-embedding/embed-widget-advanced-chart.js";
+      script.id = "tradingview-widget-script";
+      script.type = "text/javascript";
+      script.async = true;
+
+      // The JSON configuration
+      const widgetConfig = {
+        width: "1350",
+        height: "600",
+        symbol: "NASDAQ:AAPL",
+        interval: "D",
+        timezone: "Etc/UTC",
+        theme: "light",
+        style: "1",
+        locale: "en",
+        allow_symbol_change: true,
+        calendar: false,
+        support_host: "https://www.tradingview.com"
+      };
+
+      // Append the config as a JSON string to the script
+      script.innerHTML = JSON.stringify(widgetConfig);
+
+      // Handle script loading errors
+      script.onerror = (error) => {
+        console.error("Failed to load TradingView widget script", error);
+      };
+
+      // Delay the script injection to ensure DOM is ready
+      setTimeout(() => {
+        container.current.appendChild(script);
+      }, 100); // Adjust the delay as needed
+    }
+
+    // Cleanup function to remove the script on unmount
+    return () => {
+      const script = document.getElementById("tradingview-widget-script");
+      if (script) {
+        script.remove();
+      }
+    };
+  }, []);
+
+  const sampleStake = 100; // Example stake amount in currency
+  const sampleSetStake = (newStake) => {
+    console.log("Stake updated to:", newStake);
+  };
+
+  const sampleSelectedMultiplier = 2; // Example multiplier
+  const sampleSetSelectedMultiplier = (newMultiplier) => {
+    console.log("Multiplier updated to:", newMultiplier);
+  };
+
+  const sampleCurrentPrice = 50.25; // Example current price of the asset
+  const sampleHandleBuyIn = () => {
+    console.log("Buy in action triggered");
+  };
+
+  const sampleHandleBuyOut = () => {
+    console.log("Buy out action triggered");
+  };
+
   return (
-    <div>
-      <iframe
-        src="https://www.tradingview.com/chart/?symbol=NASDAQ%3ANDX"
-        title="Embedded Webpage"
-        style={{ width: "100%", height: "80vh", border: "none" }}
-      ></iframe>
+    <div className="flex flex-row">
+      <div className="tradingview-widget-container" ref={container}>
+        <div className="tradingview-widget-container__widget"></div>
+        <div className="tradingview-widget-copyright">
+          <a
+            href="https://www.tradingview.com/"
+            rel="noopener nofollow"
+            target="_blank"
+          >
+            <span className="blue-text">Track all markets on TradingView</span>
+          </a>
+        </div>
+      </div>
+      <div>
+        <RealTradeSideBar
+          stake={sampleStake}
+          setStake={sampleSetStake}
+          selectedMultiplier={sampleSelectedMultiplier}
+          setSelectedMultiplier={sampleSetSelectedMultiplier}
+          currentPrice={sampleCurrentPrice}
+          handleBuyIn={sampleHandleBuyIn}
+          handleBuyOut={sampleHandleBuyOut}
+        />
+      </div>
     </div>
   );
 };
 
-export default RealTrading;
+export default memo(RealTrading);
