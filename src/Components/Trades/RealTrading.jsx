@@ -5,7 +5,6 @@ const RealTrading = () => {
   const container = useRef();
 
   useEffect(() => {
-    // Check if the script already exists to avoid adding it again
     if (!document.getElementById("tradingview-widget-script")) {
       const script = document.createElement("script");
       script.src =
@@ -14,7 +13,6 @@ const RealTrading = () => {
       script.type = "text/javascript";
       script.async = true;
 
-      // The JSON configuration
       const widgetConfig = {
         width: "1350",
         height: "600",
@@ -29,21 +27,16 @@ const RealTrading = () => {
         support_host: "https://www.tradingview.com"
       };
 
-      // Append the config as a JSON string to the script
       script.innerHTML = JSON.stringify(widgetConfig);
-
-      // Handle script loading errors
       script.onerror = (error) => {
         console.error("Failed to load TradingView widget script", error);
       };
 
-      // Delay the script injection to ensure DOM is ready
       setTimeout(() => {
         container.current.appendChild(script);
-      }, 100); // Adjust the delay as needed
+      }, 500); // Adjusted delay
     }
 
-    // Cleanup function to remove the script on unmount
     return () => {
       const script = document.getElementById("tradingview-widget-script");
       if (script) {
@@ -52,17 +45,17 @@ const RealTrading = () => {
     };
   }, []);
 
-  const sampleStake = 100; // Example stake amount in currency
+  const sampleStake = 100;
   const sampleSetStake = (newStake) => {
     console.log("Stake updated to:", newStake);
   };
 
-  const sampleSelectedMultiplier = 2; // Example multiplier
+  const sampleSelectedMultiplier = 2;
   const sampleSetSelectedMultiplier = (newMultiplier) => {
     console.log("Multiplier updated to:", newMultiplier);
   };
 
-  const sampleCurrentPrice = 50.25; // Example current price of the asset
+  const sampleCurrentPrice = 50.25;
   const sampleHandleBuyIn = () => {
     console.log("Buy in action triggered");
   };
@@ -92,8 +85,8 @@ const RealTrading = () => {
           selectedMultiplier={sampleSelectedMultiplier}
           setSelectedMultiplier={sampleSetSelectedMultiplier}
           currentPrice={sampleCurrentPrice}
-          handleBuyIn={sampleHandleBuyIn}
-          handleBuyOut={sampleHandleBuyOut}
+          buyIn={sampleHandleBuyIn} // Updated prop
+          buyOut={sampleHandleBuyOut} // Updated prop
         />
       </div>
     </div>
