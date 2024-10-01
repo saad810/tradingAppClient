@@ -78,15 +78,7 @@ const DemoTradeSideBar = ({
       </div>
 
       <div className="bg-slate-200 px-4 py-6 my-1">
-        <h4 className="font-semibold text-base text-primary pb-2">Current Price</h4>
-        <div className="bg-slate-100 w-52 rounded-lg mb-3 flex items-center gap-8 px-4 py-4">
-          <span className="text-lg font-semibold">
-            {currentPrice !== null
-              ? `$${currentPrice.toFixed(2)}`
-              : "Loading..."}
-          </span>
-        </div>
-
+       
         <button
           onClick={handleBuyIn}
           disabled={!stake || !selectedMultiplier || currentPrice === null}

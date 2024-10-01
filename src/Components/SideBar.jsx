@@ -72,7 +72,7 @@ const SideBar = () => {
                 </Link>
 
                 <Link to="/chat" className="text-lg font-medium">
-                  Customer support
+                  AI Learning
                 </Link>
                 <Link to="/customer-support" className="text-lg font-medium">
                   Support
@@ -93,7 +93,7 @@ const SideBar = () => {
                 FAQs
               </Link>
               <Link to="/chat" className="text-lg font-medium">
-                Customer support
+                AI Learning
               </Link>
               <Link to="/customer-support" className="text-lg font-medium">
                 Support

@@ -24,9 +24,8 @@ const useCandlestickData = (symbol, aggregationTime = 5) => {
         await api.disconnect();
         return;
       }
-      
+
       if (data.msg_type === "tick") {
-        console.log("Tick: ", data);
         updateTickBuffer(data.tick);
       }
     };

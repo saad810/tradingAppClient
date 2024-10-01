@@ -1,4 +1,4 @@
-import React,{useEffect} from "react";
+import React, { useEffect } from "react";
 import hero from "./assets/8asdas52 1 (1).png";
 import bgImage from "./assets/candlesticks-bg.png";
 import fontBrand from "./assets/Group.png";
@@ -6,6 +6,7 @@ import { useNavigate } from "react-router-dom";
 import FAQSection from "../Components/LandingPage/FAQSection";
 import AboutUs from "../Components/LandingPage/AboutUs";
 import { useLocation } from "react-router-dom";
+import { faqs } from './assets/faqs'
 const MainLandingPage = () => {
   const navigate = useNavigate();
   const location = useLocation();
@@ -62,7 +63,7 @@ const MainLandingPage = () => {
         <AboutUs />
       </div>
       <div id="faqs" >
-        <FAQSection />
+        <FAQSection faqs={faqs} />
       </div>
     </div>
   );

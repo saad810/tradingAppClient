@@ -1,0 +1,9 @@
+ const handleScreenshot = () => {
+    if (chartRef.current) {
+      const canvas = chartRef.current.takeScreenshot();
+      const link = document.createElement("a");
+      link.download = "chart-screenshot.png";
+      link.href = canvas.toDataURL();
+      link.click();
+    }
+  };
