@@ -63,7 +63,7 @@ const MainLandingPage = () => {
         <AboutUs />
       </div>
       <div id="faqs" >
-        <FAQSection faqs={faqs} />
+        <FAQSection faqs={faqs} title={" Frequently Asked Questions"} />
       </div>
     </div>
   );

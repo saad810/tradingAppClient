@@ -1,6 +1,7 @@
 import React, { useState } from "react";
+import { MdTitle } from "react-icons/md";
 
-const FAQSection = ({ faqs }) => {
+const FAQSection = ({ faqs,title }) => {
   const [activeIndex, setActiveIndex] = useState(null);
 
   const toggleFAQ = (index) => {
@@ -13,7 +14,7 @@ const FAQSection = ({ faqs }) => {
     <section className="mt-4 py-10 px-4 sm:px-8 md:px-16 lg:px-32">
       <div className="max-w-7xl mx-auto">
         <h2 className="text-3xl font-bold text-primary mb-8 text-center">
-          Frequently Asked Questions
+         {title ? title : ""}
         </h2>
         <div className="space-y-4">
           {faqs.map((faq, index) => (

@@ -90,11 +90,11 @@ const useDemoTrade = (symbol, candlestickData) => {
     }
   };
 
-  useEffect(() => {
-    if (demoBalance < stake) {
-      toast.error("Insufficient demo balance");
-    }
-  }, [demoBalance]);
+  // useEffect(() => {
+  //   if (demoBalance < stake) {
+  //     toast.error("Insufficient demo balance");
+  //   }
+  // }, [demoBalance]);
 
   const handleBuyIn = () => {
     if (demoBalance >= stake) {

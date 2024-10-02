@@ -78,7 +78,7 @@ const Deposit = ({ onClose }) => {
         balance: parseFloat(amount),
         easypaisaNumber: number,
       });
-      console.log("response", response)
+      alert("response", response)
 
       setAuth((prev) => ({
         ...prev,

@@ -96,7 +96,7 @@ const SideBar = () => {
                 AI Learning
               </Link>
               <Link to="/customer-support" className="text-lg font-medium">
-                Support
+                Community Engagement
               </Link>
             </li>
 

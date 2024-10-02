@@ -13,9 +13,9 @@ const useTrade = (symbol, candlestickData) => {
     "50X"
   );
   const [profitLoss, setProfitLoss] = useState(null);
-  const [buyInPrice, setBuyInPrice] = useState(null);
-  const [buyOutPrice, setBuyOutPrice] = useState(null);
-  const [userTrade, setUserTrade] = useState(null);
+  const [buyInPrice, setBuyInPrice] = useLocalStorage("buyInPrice", null);
+  const [buyOutPrice, setBuyOutPrice] = useLocalStorage("buyOutPrice", null);
+  const [userTrade, setUserTrade] = useLocalStorage("userTrade", null);
 
   useEffect(() => {
     if (candlestickData && candlestickData.length > 0) {
@@ -41,15 +41,21 @@ const useTrade = (symbol, candlestickData) => {
   const buyIn = (price) => {
     if (!price) return;
     setBuyInPrice(price);
+    localStorage.setItem("buyInPrice", price);
     toast.success("Buy In successful");
   };
 
   const buyOut = async (price) => {
-    if (!buyInPrice || !price) return;
+    const buyInPrice = localStorage.getItem("buyInPrice");
+    if (!buyInPrice) {
+      toast.error("Buy in price not set");
+      return;
+    }
     setBuyOutPrice(price);
     const profitLossPercentage = (price - buyInPrice) / buyInPrice;
     setProfitLoss(profitLossPercentage);
     toast.success("Buy Out successful");
+    return profitLossPercentage;
   };
 
   useEffect(() => {
@@ -72,11 +78,15 @@ const useTrade = (symbol, candlestickData) => {
     }
   }, [profitLoss, stake, selectedMultiplier]);
 
-  const handleCreateTrade = async () => {
-    if (!userTrade) return;
+  const handleCreateTrade = async (data) => {
+    if (!data) {
+      console.log("Trade not created", data);
+      return
+    };
+    console.log("Creating Trade[inside func]", data);
     try {
-      console.log("Creating Trade[inside func]", userTrade);
-      const response = await axios.post("/trades", userTrade, {
+      console.log("Creating Trade[inside try catch]");
+      const response = await axios.post("/trades", data, {
         headers: {
           "Content-Type": "application/json",
         },
@@ -133,9 +143,17 @@ const useTrade = (symbol, candlestickData) => {
   };
 
   const handleBuyOut = async () => {
+    const buyInPrice = localStorage.getItem("buyInPrice");
+  
     try {
       if (buyInPrice !== null && currentPrice !== null) {
-        await buyOut(currentPrice); // Wait for buyOut to finish
+        const profitLoss = await buyOut(currentPrice); // Wait for buyOut to finish
+  
+        // Check if profitLoss has been set before using it
+        if (profitLoss === null) {
+          toast.error("Profit loss has not been calculated yet.");
+          return;
+        }
   
         const winAmount = calculateWinNum(profitLoss, selectedMultiplier, stake);
         const updatedBalance = auth.wallet.balance + winAmount; // Update balance with the winnings
@@ -149,10 +167,29 @@ const useTrade = (symbol, candlestickData) => {
           },
         }));
   
-        console.log("Win Amount", winAmount);
-        console.log("Trade before [[function]]", userTrade);
+        const tradeData = {
+          isDemo: false,
+          tradePair: symbol,
+          tradeEntry: buyInPrice,
+          tradeClosePrice: currentPrice,
+          profitVal: winAmount,
+          stake: stake,
+          tradeType: "multiplier",
+          multiplier: selectedMultiplier,
+          tradeWinNum: winAmount,
+          tradeUserId: auth.user.id,
+        };
   
-        await handleCreateTrade(); // Log the trade
+        console.log("Win Amount:", winAmount);
+        console.log("Trade Data before creation:", tradeData);
+  
+        // Check if tradeData is valid before proceeding
+        if (!tradeData.tradeEntry || !tradeData.tradeClosePrice || !tradeData.profitVal) {
+          toast.error("Trade data is incomplete. Cannot create trade.");
+          return;
+        }
+  
+        await handleCreateTrade(tradeData); // Create the trade
         await handleWalletUpdate(updatedBalance); // Update the wallet on the server
       } else {
         toast.error("Buy in before attempting to buy out");
@@ -163,6 +200,7 @@ const useTrade = (symbol, candlestickData) => {
     }
   };
   
+
   return {
     stake,
     setStake,

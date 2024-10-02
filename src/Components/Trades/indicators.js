@@ -8,12 +8,30 @@ export const calculateMovingAverage = (data, period) => {
     return movingAverages;
 };
 export const calculateBollingerBands = (data, period, numStdDev) => {
+    // Ensure data is valid and has enough entries to calculate Bollinger Bands
+    if (!data || data.length < period) {
+        console.error("Insufficient data to calculate Bollinger Bands.");
+        return [];
+    }
+
     const movingAverages = calculateMovingAverage(data, period);
+    if (!movingAverages || movingAverages.length < period) {
+        console.error("Insufficient moving averages to calculate Bollinger Bands.");
+        return [];
+    }
+
     const bollingerBands = [];
 
     for (let i = period - 1; i < data.length; i++) {
         const slice = data.slice(i - period + 1, i + 1);
-        const mean = movingAverages[i - period + 1].value;
+        const movingAverage = movingAverages[i - period + 1]; // Safely access moving average
+
+        if (!movingAverage) {
+            console.error("Missing moving average for index", i - period + 1);
+            continue; // Skip iteration if the moving average is missing
+        }
+
+        const mean = movingAverage.value;
         const stdDev = Math.sqrt(
             slice.reduce((acc, candle) => acc + Math.pow(candle.close - mean, 2), 0) / period
         );
@@ -25,8 +43,10 @@ export const calculateBollingerBands = (data, period, numStdDev) => {
             lower: mean - numStdDev * stdDev,
         });
     }
+
     return bollingerBands;
 };
+
 export const calculateRSI = (data, period) => {
     if (data.length < period) return []; // Return empty array if not enough data
 

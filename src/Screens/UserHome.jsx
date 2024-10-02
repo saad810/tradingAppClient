@@ -8,6 +8,7 @@ import RealTrading from "../Components/Trades/RealTrading";
 
 const UserHome = () => {
   const { auth } = useAuth(); // Assuming auth contains the entire object
+  
 
   const Authenticated = () => (
     <div>{auth.currAccType === "demo" ? <DemoTrading /> : <RealTrading />}</div>
